@@ -27,7 +27,7 @@ namespace APIEvent.Controllers
                 using (var conexion = new SqlConnection(cadenaSQL))
                 {
                     conexion.Open();
-                    var cmd = new SqlCommand("usp_listevents", conexion);
+                    var cmd = new SqlCommand("USP_EVENTO_LISTAR", conexion);
                     cmd.CommandType = CommandType.StoredProcedure;
                     using (var rd = cmd.ExecuteReader())
                     {
@@ -35,14 +35,13 @@ namespace APIEvent.Controllers
                         {
                             lista.Add(new Event
                             {
-                                id_event = Convert.ToInt32(rd["id_event"]),
-                                name_event = rd["name_event"].ToString(),
-                                cost_event = Convert.ToInt32(rd["cost_event"]),
-                                date_event = Convert.ToDateTime(rd["date_event"]),
-                                location_event = rd["location_event"].ToString(),
-                                description_event = rd["description_event"].ToString(),
-                                capacity_event = Convert.ToInt32(rd["capacity_event"]),
-                                id_admin = Convert.ToInt32(rd["id_admin"]),
+                                id_evento = Convert.ToInt32(rd["id_evento"]),
+                                nombre_evento = rd["nombre_evento"].ToString(),
+                                fecha_creacion = Convert.ToDateTime(rd["fecha_creacion"]),
+                                imagen = rd["imagen"].ToString(),
+                                tipo_evento = rd["tipo_evento"].ToString(),
+                                valor_evento = Convert.ToInt32(rd["valor_evento"]),
+                                cedulaadmin1 = Convert.ToInt32(rd["cedulaadmin1"]),
                             });
                         }
                     }
@@ -56,8 +55,8 @@ namespace APIEvent.Controllers
         }
 
         [HttpGet]
-        [Route("Obtener/{id_event:int}")]
-        public IActionResult Obtener(int id_event)
+        [Route("Obtener/{id_evento:int}")]
+        public IActionResult Obtener(int id_evento)
         {
             List<Event> lista = new List<Event>();
             Event oproducto = new Event();
@@ -66,7 +65,7 @@ namespace APIEvent.Controllers
                 using (var conexion = new SqlConnection(cadenaSQL))
                 {
                     conexion.Open();
-                    var cmd = new SqlCommand("usp_listevents", conexion);
+                    var cmd = new SqlCommand("USP_EVENTO_CONSULTAR", conexion);
                     cmd.CommandType = CommandType.StoredProcedure;
                     using (var rd = cmd.ExecuteReader())
                     {
@@ -74,19 +73,18 @@ namespace APIEvent.Controllers
                         {
                             lista.Add(new Event
                             {
-                                id_event = Convert.ToInt32(rd["id_event"]),
-                                name_event = rd["name_event"].ToString(),
-                                cost_event = Convert.ToInt32(rd["cost_event"]),
-                                date_event = Convert.ToDateTime(rd["date_event"]),
-                                location_event = rd["location_event"].ToString(),
-                                description_event = rd["description_event"].ToString(),
-                                capacity_event = Convert.ToInt32(rd["capacity_event"]),
-                                id_admin = Convert.ToInt32(rd["id_admin"]),
+                                id_evento = Convert.ToInt32(rd["id_evento"]),
+                                nombre_evento = rd["nombre_evento"].ToString(),
+                                fecha_creacion = Convert.ToDateTime(rd["fecha_creacion"]),
+                                imagen = rd["imagen"].ToString(),
+                                tipo_evento = rd["tipo_evento"].ToString(),
+                                valor_evento = Convert.ToInt32(rd["valor_evento"]),
+                                cedulaadmin1 = Convert.ToInt32(rd["cedulaadmin1"]),
                             });
                         }
                     }
                 }
-                oproducto = lista.Where(item => item.id_event == id_event).FirstOrDefault();
+                oproducto = lista.Where(item => item.id_evento == id_evento).FirstOrDefault();
                 return StatusCode(StatusCodes.Status200OK, new { mensaje = "ok", response = oproducto });
             }
             catch (Exception error)
@@ -95,85 +93,7 @@ namespace APIEvent.Controllers
             }
         }
 
-        [HttpPost]
-        [Route("Guardar")]
-        public IActionResult Guardar([FromBody] Event objeto)
-        {
-            try
-            {
-                using (var conexion = new SqlConnection(cadenaSQL))
-                {
-                    conexion.Open();
-                    var cmd = new SqlCommand("usp_insertevent", conexion);
-                    cmd.Parameters.AddWithValue("name_event", objeto.name_event);
-                    cmd.Parameters.AddWithValue("cost_event", objeto.cost_event);
-                    cmd.Parameters.AddWithValue("date_event", objeto.date_event);
-                    cmd.Parameters.AddWithValue("location_event", objeto.location_event);
-                    cmd.Parameters.AddWithValue("description_event", objeto.description_event);
-                    cmd.Parameters.AddWithValue("capacity_event", objeto.capacity_event);
-                    cmd.Parameters.AddWithValue("id_admin", objeto.id_admin);
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.ExecuteNonQuery();
-                }
-                return StatusCode(StatusCodes.Status200OK, new { mensaje = "agregado" });
-            }
-            catch (Exception error)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new { mensaje = error.Message });
-            }
-        }
-
-
-        [HttpPut]
-        [Route("Editar")]
-        public IActionResult Editar([FromBody] Event objeto)
-        {
-            try
-            {
-                using (var conexion = new SqlConnection(cadenaSQL))
-                {
-                    conexion.Open();
-                    var cmd = new SqlCommand("usp_editevents", conexion);
-                    cmd.Parameters.AddWithValue("id_event", objeto.id_event == 0 ? DBNull.Value : objeto.id_event);
-                    cmd.Parameters.AddWithValue("name_event", objeto.name_event is null ? DBNull.Value : objeto.name_event);
-                    cmd.Parameters.AddWithValue("cost_event", objeto.cost_event  == 0 ? DBNull.Value : objeto.cost_event);
-                    cmd.Parameters.AddWithValue("date_event", objeto.date_event);
-                    cmd.Parameters.AddWithValue("location_event", objeto.location_event is null ? DBNull.Value : objeto.location_event);
-                    cmd.Parameters.AddWithValue("description_event", objeto.description_event is null ? DBNull.Value : objeto.description_event);
-                    cmd.Parameters.AddWithValue("capacity_event", objeto.capacity_event == 0 ? DBNull.Value : objeto.capacity_event);
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.ExecuteNonQuery();
-                }
-                return StatusCode(StatusCodes.Status200OK, new { mensaje = "editado" });
-            }
-            catch (Exception error)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new { mensaje = error.Message });
-            }
-        }
-
-
-        [HttpDelete]
-        [Route("Eliminar/{id_event:int}")]
-        public IActionResult Eliminar(int id_event)
-        {
-            try
-            {
-                using (var conexion = new SqlConnection(cadenaSQL))
-                {
-                    conexion.Open();
-                    var cmd = new SqlCommand("usp_deleteevent", conexion);
-                    cmd.Parameters.AddWithValue("id_event", id_event);
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.ExecuteNonQuery();
-                }
-                return StatusCode(StatusCodes.Status200OK, new { mensaje = "eliminado" });
-            }
-            catch (Exception error)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new { mensaje = error.Message });
-            }
-        }
+       
 
 
 

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "NIl1RTj4DQGioZZI10eHPdWFKMhokgwdkrq+wJend5IO1KMgsj682pBm3wNAWFCa573dNiIDz/omn0Hp9y/CNg==",
+  "dgSpecHash": "4Fhwhb4jrwGVokoZBF0FwCoLvJlNU4JIG0MfYkq48uYFV+WD5n5WA6ajQrollVaK+iagboP6JUOOnyzfilX23g==",
   "success": true,
-  "projectFilePath": "D:\\C#\\Asistencia-Controll\\APIEvent\\APIEvent\\APIEvent.csproj",
+  "projectFilePath": "D:\\C#\\Asistencia-Controll\\ApiEvent\\APIEvent\\APIEvent.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Yuliam Osorio\\.nuget\\packages\\microsoft.extensions.apidescription.server\\3.0.0\\microsoft.extensions.apidescription.server.3.0.0.nupkg.sha512",
     "C:\\Users\\Yuliam Osorio\\.nuget\\packages\\microsoft.netcore.platforms\\3.1.0\\microsoft.netcore.platforms.3.1.0.nupkg.sha512",

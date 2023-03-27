@@ -31,3 +31,5 @@ D:\C#\Asistencia-Controll\APIEvent\APIEvent\obj\Debug\net6.0\refint\APIEvent.dll
 D:\C#\Asistencia-Controll\APIEvent\APIEvent\obj\Debug\net6.0\APIEvent.pdb
 D:\C#\Asistencia-Controll\APIEvent\APIEvent\obj\Debug\net6.0\APIEvent.genruntimeconfig.cache
 D:\C#\Asistencia-Controll\APIEvent\APIEvent\obj\Debug\net6.0\ref\APIEvent.dll
+D:\C#\Asistencia-Controll\ApiEvent\APIEvent\bin\Debug\net6.0\CloudinaryDotNet.dll
+D:\C#\Asistencia-Controll\ApiEvent\APIEvent\bin\Debug\net6.0\Newtonsoft.Json.dll

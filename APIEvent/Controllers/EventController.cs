@@ -1,9 +1,15 @@
 ﻿using APIEvent.Models;
+using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
+using CloudinaryDotNet.Core;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
+
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using System.Data.SqlClient;
+
+
 
 namespace APIEvent.Controllers
 {
@@ -93,7 +99,52 @@ namespace APIEvent.Controllers
             }
         }
 
-       
+
+
+        [HttpPost]
+        [Route("Enviar")]
+        public IActionResult GuardarEvento(string nombreEvento, string tipoEvento, float valorEvento, DateTime fechaEvento, string sitio, string descripcion, int aforo, float total, string cedulaAdmin, [FromForm] Microsoft.AspNetCore.Http.IFormFile imagen)
+        {
+            try
+            {
+                // Subir imagen a Cloudinary
+                var cloudinary = new Cloudinary(new Account("centroconveciones", "626197298893936", "RIJ0WEIegehMqcFxdjJZ7xaV7W4"));
+                var uploadResult = cloudinary.Upload(new ImageUploadParams
+                {
+                    File = new FileDescription(imagen.FileName, imagen.OpenReadStream())
+                });
+
+                // Guardar evento en la base de datos
+                using (SqlConnection connection = new SqlConnection(cadenaSQL))
+                {
+                    connection.Open();
+
+                    using (SqlCommand cmd = new SqlCommand("USP_EVENTO_INSERTAR", connection))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+
+                        cmd.Parameters.AddWithValue("@imagen", uploadResult.Url.ToString());
+                        cmd.Parameters.AddWithValue("@nombre_evento", nombreEvento);
+                        cmd.Parameters.AddWithValue("@tipo_evento", tipoEvento);
+                        cmd.Parameters.AddWithValue("@valor_evento", valorEvento);
+                        cmd.Parameters.AddWithValue("@fecha_evento", fechaEvento);
+                        cmd.Parameters.AddWithValue("@sitio", sitio);
+                        cmd.Parameters.AddWithValue("@descripcion", descripcion);
+                        cmd.Parameters.AddWithValue("@aforo", aforo);
+                        cmd.Parameters.AddWithValue("@total", total);
+                        cmd.Parameters.AddWithValue("@cedulaadmin1", cedulaAdmin);
+
+                        cmd.ExecuteNonQuery();
+
+                        return Ok();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
 
 

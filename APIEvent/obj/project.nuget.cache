@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "tUiqqbaet1c6pfBoX4OURtZ2zxH/9FWoLo0eiNdSXTt6qKxKeVdz0dl/dOuIuKTwu7CZsqDEO0S59+Cw/oVpqg==",
+  "dgSpecHash": "0Z4w/9EPrLwjNZjUoX0YehkbtLul/OSsg8fqX2J6usrtPxyl0/zS1Jw6q/glf8GwX+RGg5uwRlKd+vV6ug5NAA==",
   "success": true,
-  "projectFilePath": "D:\\C#\\Asistencia-Controll\\APIEvent\\APIEvent\\APIEvent.csproj",
+  "projectFilePath": "D:\\C#\\Asistencia-Controll\\ApiEvent\\APIEvent\\APIEvent.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Yuliam Osorio\\.nuget\\packages\\cloudinarydotnet\\1.20.0\\cloudinarydotnet.1.20.0.nupkg.sha512",
     "C:\\Users\\Yuliam Osorio\\.nuget\\packages\\microsoft.aspnetcore.html.abstractions\\2.2.0\\microsoft.aspnetcore.html.abstractions.2.2.0.nupkg.sha512",

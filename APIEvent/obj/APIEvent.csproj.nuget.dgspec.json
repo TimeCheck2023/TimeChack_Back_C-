@@ -1,15 +1,15 @@
 {
   "format": 1,
   "restore": {
-    "D:\\C#\\Asistencia-Controll\\APIEvent\\APIEvent\\APIEvent.csproj": {}
+    "D:\\C#\\Asistencia-Controll\\ApiEvent\\APIEvent\\APIEvent.csproj": {}
   },
   "projects": {
-    "D:\\C#\\Asistencia-Controll\\APIEvent\\APIEvent\\APIEvent.csproj": {
+    "D:\\C#\\Asistencia-Controll\\ApiEvent\\APIEvent\\APIEvent.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\C#\\Asistencia-Controll\\APIEvent\\APIEvent\\APIEvent.csproj",
+        "projectUniqueName": "D:\\C#\\Asistencia-Controll\\ApiEvent\\APIEvent\\APIEvent.csproj",
         "projectName": "APIEvent",
-        "projectPath": "D:\\C#\\Asistencia-Controll\\APIEvent\\APIEvent\\APIEvent.csproj",
+        "projectPath": "D:\\C#\\Asistencia-Controll\\ApiEvent\\APIEvent\\APIEvent.csproj",
         "packagesPath": "C:\\Users\\Yuliam Osorio\\.nuget\\packages\\",
         "outputPath": "D:\\C#\\Asistencia-Controll\\ApiEvent\\APIEvent\\obj\\",
         "projectStyle": "PackageReference",

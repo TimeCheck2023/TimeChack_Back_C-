@@ -18,9 +18,17 @@ namespace APIEvent.Controllers
     public class EventController : ControllerBase
     {
         private readonly string cadenaSQL;
+        private readonly string cloudName;
+        private readonly string apiKey;
+        private readonly string apiSecret;
+
         public EventController(IConfiguration config)
         {
             cadenaSQL = config.GetConnectionString("CadenaSQL");
+            var cloudinarySettings = config.GetSection("CloudinarySettings");
+            cloudName = cloudinarySettings.GetValue<string>("CloudName");
+            apiKey = cloudinarySettings.GetValue<string>("ApiKey");
+            apiSecret = cloudinarySettings.GetValue<string>("ApiSecret");
         }
 
         [HttpGet]
@@ -103,48 +111,48 @@ namespace APIEvent.Controllers
 
         [HttpPost]
         [Route("Enviar")]
-        public IActionResult GuardarEvento(string nombreEvento, string tipoEvento, float valorEvento, DateTime fechaEvento, string sitio, string descripcion, int aforo, float total, string cedulaAdmin, [FromForm] Microsoft.AspNetCore.Http.IFormFile imagen)
-        {
-            try
+            public IActionResult GuardarEvento(string nombreEvento, string tipoEvento, float valorEvento, DateTime fechaEvento, string sitio, string descripcion, int aforo, float total, string cedulaAdmin, string imagen)
             {
-                // Subir imagen a Cloudinary
-                var cloudinary = new Cloudinary(new Account("centroconveciones", "626197298893936", "RIJ0WEIegehMqcFxdjJZ7xaV7W4"));
-                var uploadResult = cloudinary.Upload(new ImageUploadParams
+                try
                 {
-                    File = new FileDescription(imagen.FileName, imagen.OpenReadStream())
-                });
-
-                // Guardar evento en la base de datos
-                using (SqlConnection connection = new SqlConnection(cadenaSQL))
-                {
-                    connection.Open();
-
-                    using (SqlCommand cmd = new SqlCommand("USP_EVENTO_INSERTAR", connection))
+                    // Subir imagen a Cloudinary
+                    var cloudinary = new Cloudinary(new Account(cloudName, apiKey, apiSecret));
+                    var uploadResult = cloudinary.Upload(new ImageUploadParams
                     {
-                        cmd.CommandType = CommandType.StoredProcedure;
+                        File = new FileDescription(nombreEvento,imagen)
+                    });
 
-                        cmd.Parameters.AddWithValue("@imagen", uploadResult.Url.ToString());
-                        cmd.Parameters.AddWithValue("@nombre_evento", nombreEvento);
-                        cmd.Parameters.AddWithValue("@tipo_evento", tipoEvento);
-                        cmd.Parameters.AddWithValue("@valor_evento", valorEvento);
-                        cmd.Parameters.AddWithValue("@fecha_evento", fechaEvento);
-                        cmd.Parameters.AddWithValue("@sitio", sitio);
-                        cmd.Parameters.AddWithValue("@descripcion", descripcion);
-                        cmd.Parameters.AddWithValue("@aforo", aforo);
-                        cmd.Parameters.AddWithValue("@total", total);
-                        cmd.Parameters.AddWithValue("@cedulaadmin1", cedulaAdmin);
+                    // Guardar evento en la base de datos
+                    using (SqlConnection connection = new SqlConnection(cadenaSQL))
+                    {
+                        connection.Open();
 
-                        cmd.ExecuteNonQuery();
+                        using (SqlCommand cmd = new SqlCommand("USP_EVENTO_INSERTAR", connection))
+                        {
+                            cmd.CommandType = CommandType.StoredProcedure;
 
-                        return Ok();
+                            cmd.Parameters.AddWithValue("@imagen", uploadResult.Url.ToString());
+                            cmd.Parameters.AddWithValue("@nombre_evento", nombreEvento);
+                            cmd.Parameters.AddWithValue("@tipo_evento", tipoEvento);
+                            cmd.Parameters.AddWithValue("@valor_evento", valorEvento);
+                            cmd.Parameters.AddWithValue("@fecha_evento", fechaEvento);
+                            cmd.Parameters.AddWithValue("@sitio", sitio);
+                            cmd.Parameters.AddWithValue("@descripcion", descripcion);
+                            cmd.Parameters.AddWithValue("@aforo", aforo);
+                            cmd.Parameters.AddWithValue("@total", total);
+                            cmd.Parameters.AddWithValue("@cedulaadmin1", cedulaAdmin);
+
+                            cmd.ExecuteNonQuery();
+
+                            return Ok();
+                        }
                     }
                 }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
             }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
 
 
 

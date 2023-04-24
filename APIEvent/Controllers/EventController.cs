@@ -24,13 +24,17 @@ namespace APIEvent.Controllers
 
         public EventController(IConfiguration config)
         {
+            //Cadena de conexion a la DB desde el archivo appsettings.json
             cadenaSQL = config.GetConnectionString("CadenaSQL");
+
+            //Variable del archivo appsettings.json que contiene CloudName, ApiKey, ApiSecret de Cloudinary
             var cloudinarySettings = config.GetSection("CloudinarySettings");
             cloudName = cloudinarySettings.GetValue<string>("CloudName");
             apiKey = cloudinarySettings.GetValue<string>("ApiKey");
             apiSecret = cloudinarySettings.GetValue<string>("ApiSecret");
         }
 
+        //Endpoint para listar los eventos
         [HttpGet]
         [Route("Lista")]
         public IActionResult Lista()
@@ -38,9 +42,12 @@ namespace APIEvent.Controllers
             List<Event> lista = new List<Event>();
             try
             {
+                //Se conecta la DB usando SqlConnection y la cadena de conexion
                 using (var conexion = new SqlConnection(cadenaSQL))
                 {
+                    //Se abre la conexion a la DB
                     conexion.Open();
+                    //Se ejecuta el procedimiento USP_EVENTO_LISTAR
                     var cmd = new SqlCommand("USP_EVENTO_LISTAR", conexion);
                     cmd.CommandType = CommandType.StoredProcedure;
                     using (var rd = cmd.ExecuteReader())
@@ -49,6 +56,7 @@ namespace APIEvent.Controllers
                         {
                             lista.Add(new Event
                             {
+                                //Se le asgina los campos respectivos
                                 id_evento = Convert.ToInt32(rd["id_evento"]),
                                 nombre_evento = rd["nombre_evento"].ToString(),
                                 fecha_creacion = Convert.ToDateTime(rd["fecha_creacion"]),
@@ -60,16 +68,22 @@ namespace APIEvent.Controllers
                         }
                     }
                 }
+                //Retorna un mensaje "ok" si sale todo bien y un estado 200
                 return StatusCode(StatusCodes.Status200OK, new { mensaje = "ok", response = lista });
             }
             catch (Exception error)
             {
+                //Retorna un mensaje de error si salió algo malo y un estado 500
                 return StatusCode(StatusCodes.Status500InternalServerError, new { mensaje = error.Message, response = lista });
             }
         }
 
+
+
+        //Endpoint para obtener un solo evento
         [HttpGet]
         [Route("Obtener/{id_evento:int}")]
+        //Se le pide un parametro el cual es el id del evento
         public IActionResult Obtener(int id_evento)
         {
             List<Event> lista = new List<Event>();
@@ -108,7 +122,8 @@ namespace APIEvent.Controllers
         }
 
 
-
+       
+        //Endpoint para guardar un nuevo evento en la DB
         [HttpPost]
         [Route("Enviar")]
             public IActionResult GuardarEvento(string nombreEvento, string tipoEvento, float valorEvento, DateTime fechaEvento, string sitio, string descripcion, int aforo, float total, string cedulaAdmin, string imagen)
@@ -119,7 +134,8 @@ namespace APIEvent.Controllers
                     var cloudinary = new Cloudinary(new Account(cloudName, apiKey, apiSecret));
                     var uploadResult = cloudinary.Upload(new ImageUploadParams
                     {
-                        File = new FileDescription(nombreEvento,imagen)
+                        PublicId = nombreEvento,
+                        File = new FileDescription(imagen)
                     });
 
                     // Guardar evento en la base de datos
@@ -130,7 +146,8 @@ namespace APIEvent.Controllers
                         using (SqlCommand cmd = new SqlCommand("USP_EVENTO_INSERTAR", connection))
                         {
                             cmd.CommandType = CommandType.StoredProcedure;
-
+                        
+                            // Se agregan los parámetros necesarios para insertar un evento en la tabla correspondiente
                             cmd.Parameters.AddWithValue("@imagen", uploadResult.Url.ToString());
                             cmd.Parameters.AddWithValue("@nombre_evento", nombreEvento);
                             cmd.Parameters.AddWithValue("@tipo_evento", tipoEvento);
@@ -144,13 +161,15 @@ namespace APIEvent.Controllers
 
                             cmd.ExecuteNonQuery();
 
-                            return Ok();
+                        // Si todo ha ido bien, retorna un objeto Ok()
+                        return Ok();
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    return BadRequest(ex.Message);
+                // Si ha habido un error, retorna un objeto BadRequest con el mensaje de error
+                return BadRequest(ex.Message);
                 }
             }
 

@@ -122,56 +122,64 @@ namespace APIEvent.Controllers
         }
 
 
-       
+
         //Endpoint para guardar un nuevo evento en la DB
         [HttpPost]
         [Route("Enviar")]
-            public IActionResult GuardarEvento(string nombreEvento, string tipoEvento, float valorEvento, DateTime fechaEvento, string sitio, string descripcion, int aforo, float total, string cedulaAdmin, string imagen)
+        public IActionResult GuardarEvento(string nombreEvento, string categoria, float valorEvento, DateTime fechaEvento, string sitio, string descripcion, int aforo, float valorTotal, long cedulaAdmin, string imagen)
+        {
+            try
             {
-                try
+                // Subir imagen a Cloudinary
+                var cloudinary = new Cloudinary(new Account(cloudName, apiKey, apiSecret));
+                var uploadResult = cloudinary.Upload(new ImageUploadParams
                 {
-                    // Subir imagen a Cloudinary
-                    var cloudinary = new Cloudinary(new Account(cloudName, apiKey, apiSecret));
-                    var uploadResult = cloudinary.Upload(new ImageUploadParams
+                    PublicId = nombreEvento,
+                    File = new FileDescription(imagen)
+                });
+
+                // Guardar evento en la base de datos
+                using (SqlConnection connection = new SqlConnection(cadenaSQL))
+                {
+                    connection.Open();
+
+                    using (SqlCommand cmd = new SqlCommand("sp_INSERT_EVENTO", connection))
                     {
-                        PublicId = nombreEvento,
-                        File = new FileDescription(imagen)
-                    });
+                        cmd.CommandType = CommandType.StoredProcedure;
 
-                    // Guardar evento en la base de datos
-                    using (SqlConnection connection = new SqlConnection(cadenaSQL))
-                    {
-                        connection.Open();
+                        // Se agregan los parámetros necesarios para insertar un evento en la tabla correspondiente
+                        cmd.Parameters.AddWithValue("@nombre_evento", nombreEvento);
+                        cmd.Parameters.AddWithValue("@imagen", uploadResult.Url.ToString());
+                        cmd.Parameters.AddWithValue("@valor_evento", valorEvento);
+                        cmd.Parameters.AddWithValue("@categoria", categoria);
+                        cmd.Parameters.AddWithValue("@id_tipo_evento2", 1); //No se está usando
+                        cmd.Parameters.AddWithValue("@id_subconju_cedula_org2", 1); //No se está usando
+                        cmd.Parameters.AddWithValue("@id_Gestion_evento2", 1); //No se está usando
+                        cmd.Parameters.AddWithValue("@valor_total", valorTotal);
+                        cmd.Parameters.AddWithValue("@fecha", fechaEvento);
+                        cmd.Parameters.AddWithValue("@sitio", sitio);
+                        cmd.Parameters.AddWithValue("@descripcion", descripcion);
+                        cmd.Parameters.AddWithValue("@aforo", aforo);
+                        cmd.Parameters.AddWithValue("@total", valorTotal);
+                        cmd.Parameters.AddWithValue("@cedula2", cedulaAdmin);
 
-                        using (SqlCommand cmd = new SqlCommand("USP_EVENTO_INSERTAR", connection))
-                        {
-                            cmd.CommandType = CommandType.StoredProcedure;
-                        
-                            // Se agregan los parámetros necesarios para insertar un evento en la tabla correspondiente
-                            cmd.Parameters.AddWithValue("@imagen", uploadResult.Url.ToString());
-                            cmd.Parameters.AddWithValue("@nombre_evento", nombreEvento);
-                            cmd.Parameters.AddWithValue("@tipo_evento", tipoEvento);
-                            cmd.Parameters.AddWithValue("@valor_evento", valorEvento);
-                            cmd.Parameters.AddWithValue("@fecha_evento", fechaEvento);
-                            cmd.Parameters.AddWithValue("@sitio", sitio);
-                            cmd.Parameters.AddWithValue("@descripcion", descripcion);
-                            cmd.Parameters.AddWithValue("@aforo", aforo);
-                            cmd.Parameters.AddWithValue("@total", total);
-                            cmd.Parameters.AddWithValue("@cedulaadmin1", cedulaAdmin);
+                        //SqlParameter respuesta = new SqlParameter("@respuesta", SqlDbType.VarChar, 50);
+                        //respuesta.Direction = ParameterDirection.Output;
+                        //cmd.Parameters.Add(respuesta);
 
-                            cmd.ExecuteNonQuery();
+                        cmd.ExecuteNonQuery();
 
                         // Si todo ha ido bien, retorna un objeto Ok()
                         return Ok();
-                        }
                     }
                 }
-                catch (Exception ex)
-                {
+            }
+            catch (Exception ex)
+            {
                 // Si ha habido un error, retorna un objeto BadRequest con el mensaje de error
                 return BadRequest(ex.Message);
-                }
             }
+        }
 
 
 

@@ -36,7 +36,7 @@ namespace APIEvent.Controllers
 
         //Endpoint para listar los eventos
         [HttpGet]
-        [Route("Lista")]
+        [Route("List")]
         public IActionResult Lista()
         {
             List<Event> lista = new List<Event>();
@@ -48,7 +48,7 @@ namespace APIEvent.Controllers
                     //Se abre la conexion a la DB
                     conexion.Open();
                     //Se ejecuta el procedimiento USP_EVENTO_LISTAR
-                    var cmd = new SqlCommand("USP_EVENTO_LISTAR", conexion);
+                    var cmd = new SqlCommand("USP_ListarEventos", conexion);
                     cmd.CommandType = CommandType.StoredProcedure;
                     using (var rd = cmd.ExecuteReader())
                     {
@@ -57,13 +57,20 @@ namespace APIEvent.Controllers
                             lista.Add(new Event
                             {
                                 //Se le asgina los campos respectivos
-                                id_evento = Convert.ToInt32(rd["id_evento"]),
-                                nombre_evento = rd["nombre_evento"].ToString(),
-                                fecha_creacion = Convert.ToDateTime(rd["fecha_creacion"]),
-                                imagen = rd["imagen"].ToString(),
-                                tipo_evento = rd["tipo_evento"].ToString(),
-                                valor_evento = Convert.ToInt32(rd["valor_evento"]),
-                                cedulaadmin1 = Convert.ToInt32(rd["cedulaadmin1"]),
+                                IdEvento = Convert.ToInt32(rd["id_evento"]),
+                                NombreEvento = rd["nombre_evento"].ToString(),
+                                DescripcionEvento = rd["descripcion_evento"].ToString(),
+                                ImagenEvento = rd["imagen_evento"].ToString(),
+                                FechaInicioEvento = Convert.ToDateTime(rd["fecha_inicio_evento"]),
+                                FechaFinalEvento = Convert.ToDateTime(rd["fecha_final_evento"]),
+                                FechaCreacionEvento = Convert.ToDateTime(rd["fecha_creacion_evento"]),
+                                LugarEvento = rd["lugar_evento"].ToString(),
+                                AforoEvento = Convert.ToInt32(rd["aforo_evento"]),
+                                ValorEvento = Convert.ToDecimal(rd["valor_evento"]),
+                                Iva = Convert.ToDecimal(rd["iva"]),
+                                ValorTotalEvento = Convert.ToDecimal(rd["valor_total_evento"]),
+                                IdSuborganizacion = Convert.ToInt32(rd["id_suborganización1"]),
+                                IdTipoEvento = Convert.ToInt32(rd["id_tipo_evento1"])
                             });
                         }
                     }
@@ -82,9 +89,9 @@ namespace APIEvent.Controllers
 
         //Endpoint para obtener un solo evento
         [HttpGet]
-        [Route("Obtener/{id_evento:int}")]
+        [Route("Consult/{IdEvento:int}")]
         //Se le pide un parametro el cual es el id del evento
-        public IActionResult Obtener(int id_evento)
+        public IActionResult Obtener(int IdEvento)
         {
             List<Event> lista = new List<Event>();
             Event oproducto = new Event();
@@ -93,7 +100,7 @@ namespace APIEvent.Controllers
                 using (var conexion = new SqlConnection(cadenaSQL))
                 {
                     conexion.Open();
-                    var cmd = new SqlCommand("USP_EVENTO_CONSULTAR", conexion);
+                    var cmd = new SqlCommand("USP_ListarEventos", conexion);
                     cmd.CommandType = CommandType.StoredProcedure;
                     using (var rd = cmd.ExecuteReader())
                     {
@@ -101,18 +108,25 @@ namespace APIEvent.Controllers
                         {
                             lista.Add(new Event
                             {
-                                id_evento = Convert.ToInt32(rd["id_evento"]),
-                                nombre_evento = rd["nombre_evento"].ToString(),
-                                fecha_creacion = Convert.ToDateTime(rd["fecha_creacion"]),
-                                imagen = rd["imagen"].ToString(),
-                                tipo_evento = rd["tipo_evento"].ToString(),
-                                valor_evento = Convert.ToInt32(rd["valor_evento"]),
-                                cedulaadmin1 = Convert.ToInt32(rd["cedulaadmin1"]),
+                                IdEvento = Convert.ToInt32(rd["id_evento"]),
+                                NombreEvento = rd["nombre_evento"].ToString(),
+                                DescripcionEvento = rd["descripcion_evento"].ToString(),
+                                ImagenEvento = rd["imagen_evento"].ToString(),
+                                FechaInicioEvento = Convert.ToDateTime(rd["fecha_inicio_evento"]),
+                                FechaFinalEvento = Convert.ToDateTime(rd["fecha_final_evento"]),
+                                FechaCreacionEvento = Convert.ToDateTime(rd["fecha_creacion_evento"]),
+                                LugarEvento = rd["lugar_evento"].ToString(),
+                                AforoEvento = Convert.ToInt32(rd["aforo_evento"]),
+                                ValorEvento = Convert.ToDecimal(rd["valor_evento"]),
+                                Iva = Convert.ToDecimal(rd["iva"]),
+                                ValorTotalEvento = Convert.ToDecimal(rd["valor_total_evento"]),
+                                IdSuborganizacion = Convert.ToInt32(rd["id_suborganización1"]),
+                                IdTipoEvento = Convert.ToInt32(rd["id_tipo_evento1"])
                             });
                         }
                     }
                 }
-                oproducto = lista.Where(item => item.id_evento == id_evento).FirstOrDefault();
+                oproducto = lista.Where(item => item.IdEvento == IdEvento).FirstOrDefault();
                 return StatusCode(StatusCodes.Status200OK, new { mensaje = "ok", response = oproducto });
             }
             catch (Exception error)
@@ -125,8 +139,8 @@ namespace APIEvent.Controllers
 
         //Endpoint para guardar un nuevo evento en la DB
         [HttpPost]
-        [Route("Enviar")]
-        public IActionResult GuardarEvento(string nombreEvento, string categoria, float valorEvento, DateTime fechaEvento, string sitio, string descripcion, int aforo, float valorTotal, long cedulaAdmin, string imagen)
+        [Route("Send")]
+        public IActionResult GuardarEvento(string nombreEvento, string descripcion, string imagen, DateTime fecha_inicio, DateTime fecha_final,string lugar, int aforo, int id_suborganizacion, int id_tipo_evento)
         {
             try
             {
@@ -143,25 +157,24 @@ namespace APIEvent.Controllers
                 {
                     connection.Open();
 
-                    using (SqlCommand cmd = new SqlCommand("sp_INSERT_EVENTO", connection))
+                    using (SqlCommand cmd = new SqlCommand("USP_AgregarEvento", connection))
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
 
                         // Se agregan los parámetros necesarios para insertar un evento en la tabla correspondiente
-                        cmd.Parameters.AddWithValue("@nombre_evento", nombreEvento);
-                        cmd.Parameters.AddWithValue("@imagen", uploadResult.Url.ToString());
-                        cmd.Parameters.AddWithValue("@valor_evento", valorEvento);
-                        cmd.Parameters.AddWithValue("@categoria", categoria);
-                        cmd.Parameters.AddWithValue("@id_tipo_evento2", 1); //No se está usando
-                        cmd.Parameters.AddWithValue("@id_subconju_cedula_org2", 1); //No se está usando
-                        cmd.Parameters.AddWithValue("@id_Gestion_evento2", 1); //No se está usando
-                        cmd.Parameters.AddWithValue("@valor_total", valorTotal);
-                        cmd.Parameters.AddWithValue("@fecha", fechaEvento);
-                        cmd.Parameters.AddWithValue("@sitio", sitio);
+                        cmd.Parameters.AddWithValue("@nombre", nombreEvento);
                         cmd.Parameters.AddWithValue("@descripcion", descripcion);
+                        cmd.Parameters.AddWithValue("@imagen", uploadResult.Url.ToString());
+                        cmd.Parameters.AddWithValue("@fecha_inicio", fecha_inicio);
+                        cmd.Parameters.AddWithValue("@fecha_final", fecha_final);
+                        cmd.Parameters.AddWithValue("@lugar", lugar);
                         cmd.Parameters.AddWithValue("@aforo", aforo);
-                        cmd.Parameters.AddWithValue("@total", valorTotal);
-                        cmd.Parameters.AddWithValue("@cedula2", cedulaAdmin);
+                        cmd.Parameters.AddWithValue("@valor", 0);//No se esta usando por el momento por lo cual se asigna 0
+                        cmd.Parameters.AddWithValue("@iva", 0);//No se esta usando por el momento por lo cual se asigna 0
+                        cmd.Parameters.AddWithValue("@valor_total", 0);//No se esta usando por el momento por lo cual se asigna 0
+                        cmd.Parameters.AddWithValue("@id_suborganizacion", id_suborganizacion);
+                        cmd.Parameters.AddWithValue("@id_tipo_evento", id_tipo_evento);
+
 
                         //SqlParameter respuesta = new SqlParameter("@respuesta", SqlDbType.VarChar, 50);
                         //respuesta.Direction = ParameterDirection.Output;
@@ -180,6 +193,109 @@ namespace APIEvent.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+
+        //Endpoint para actualizar un evento en la DB
+        [HttpPut]
+        [Route("Update/{IdEvento:int}")]
+        public IActionResult ActualizarEvento(int IdEvento, string nombreEvento, string descripcion, string imagen, DateTime fecha_inicio, DateTime fecha_final, string lugar, int aforo, int id_tipo_evento)
+        {
+            try
+            {
+
+                // Subir imagen a Cloudinary
+                var cloudinary = new Cloudinary(new Account(cloudName, apiKey, apiSecret));
+                var uploadResult = cloudinary.Upload(new ImageUploadParams
+                {
+                    PublicId = nombreEvento,
+                    File = new FileDescription(imagen)
+                });
+
+
+                using (var conexion = new SqlConnection(cadenaSQL))
+                {
+                    conexion.Open();
+                    var cmd = new SqlCommand("USP_EditarEvento", conexion);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    // Se agregan los parámetros necesarios del evento a actualizar
+                    cmd.Parameters.AddWithValue("@id_evento", IdEvento);
+                    cmd.Parameters.AddWithValue("@nombre", nombreEvento);
+                    cmd.Parameters.AddWithValue("@descripcion", descripcion);
+                    cmd.Parameters.AddWithValue("@imagen", uploadResult.Url.ToString());
+                    cmd.Parameters.AddWithValue("@fecha_inicio", fecha_inicio);
+                    cmd.Parameters.AddWithValue("@fecha_final", fecha_final);
+                    cmd.Parameters.AddWithValue("@lugar", lugar);
+                    cmd.Parameters.AddWithValue("@aforo", aforo);
+                    cmd.Parameters.AddWithValue("@valor", 0);
+                    cmd.Parameters.AddWithValue("@iva", 0);
+                    cmd.Parameters.AddWithValue("@valor_total", 0);
+                    cmd.Parameters.AddWithValue("@id_tipo_evento", id_tipo_evento);
+                    cmd.ExecuteNonQuery();
+                }
+                // Se retorna un mensaje de éxito
+                return StatusCode(StatusCodes.Status200OK, new { mensaje = "El evento se actualizó correctamente" });
+            }
+            catch (Exception error)
+            {
+                // Si hay algún error se retorna un mensaje de error
+                return StatusCode(StatusCodes.Status500InternalServerError, new { mensaje = error.Message });
+            }
+        }
+
+
+
+
+        //Endpoint para eliminar un evento de la DB
+        [HttpDelete]
+        [Route("Delete/{idEvento:int}")]
+        public IActionResult EliminarEvento(int idEvento)
+        {
+            try
+            {
+                // Obtener imagen del evento a eliminar
+                string imagenUrl = "";
+                using (var conexion = new SqlConnection(cadenaSQL))
+                {
+                    conexion.Open();
+                    var cmd = new SqlCommand("USP_ObtenerEvento", conexion);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@id_evento", idEvento);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            //se obtiene el campo de la imagen en la DB y se guarda en imagenUrl
+                            imagenUrl = reader["imagen_evento"].ToString();
+                        }
+                    }
+                }
+
+                // Eliminar imagen de Cloudinary
+                var cloudinary = new Cloudinary(new Account(cloudName, apiKey, apiSecret));
+                var publicId = Path.GetFileNameWithoutExtension(imagenUrl);
+                var deletionParams = new DeletionParams(publicId) { ResourceType = ResourceType.Image };
+                cloudinary.Destroy(deletionParams);
+
+                // Eliminar evento de la base de datos
+                using (var conexion = new SqlConnection(cadenaSQL))
+                {
+                    conexion.Open();
+                    var cmd = new SqlCommand("USP_EliminarEvento", conexion);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@id_evento", idEvento);
+                    cmd.ExecuteNonQuery();
+                }
+
+                // Retornar mensaje de éxito
+                return StatusCode(StatusCodes.Status200OK, new { mensaje = "El evento se eliminó correctamente" });
+            }
+            catch (Exception error)
+            {
+                // Si hay algún error se retorna un mensaje de error
+                return StatusCode(StatusCodes.Status500InternalServerError, new { mensaje = error.Message });
+            }
+        }
+
 
 
 

@@ -144,14 +144,6 @@ namespace APIEvent.Controllers
         {
             try
             {
-                // Subir imagen a Cloudinary
-                var cloudinary = new Cloudinary(new Account(cloudName, apiKey, apiSecret));
-                var uploadResult = cloudinary.Upload(new ImageUploadParams
-                {
-                    PublicId = nombreEvento,
-                    File = new FileDescription(imagen)
-                });
-
                 // Guardar evento en la base de datos
                 using (SqlConnection connection = new SqlConnection(cadenaSQL))
                 {
@@ -164,7 +156,7 @@ namespace APIEvent.Controllers
                         // Se agregan los parámetros necesarios para insertar un evento en la tabla correspondiente
                         cmd.Parameters.AddWithValue("@nombre", nombreEvento);
                         cmd.Parameters.AddWithValue("@descripcion", descripcion);
-                        cmd.Parameters.AddWithValue("@imagen", uploadResult.Url.ToString());
+                        cmd.Parameters.AddWithValue("@imagen", imagen;
                         cmd.Parameters.AddWithValue("@fecha_inicio", fecha_inicio);
                         cmd.Parameters.AddWithValue("@fecha_final", fecha_final);
                         cmd.Parameters.AddWithValue("@lugar", lugar);

@@ -108,3 +108,8 @@ D:\TimeChack_Back_C-\APIEvent\obj\Debug\net6.0\refint\APIEvent.dll
 D:\TimeChack_Back_C-\APIEvent\obj\Debug\net6.0\APIEvent.pdb
 D:\TimeChack_Back_C-\APIEvent\obj\Debug\net6.0\APIEvent.genruntimeconfig.cache
 D:\TimeChack_Back_C-\APIEvent\obj\Debug\net6.0\ref\APIEvent.dll
+D:\TimeChack_Back_C-\APIEvent\bin\Debug\net6.0\System.Web.Cors.dll
+D:\TimeChack_Back_C-\APIEvent\bin\Debug\net6.0\System.Net.Http.Formatting.dll
+D:\TimeChack_Back_C-\APIEvent\bin\Debug\net6.0\System.Web.Http.dll
+D:\TimeChack_Back_C-\APIEvent\bin\Debug\net6.0\System.Web.Http.Cors.dll
+D:\TimeChack_Back_C-\APIEvent\bin\Debug\net6.0\Newtonsoft.Json.Bson.dll

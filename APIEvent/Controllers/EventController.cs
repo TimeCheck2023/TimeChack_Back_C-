@@ -70,7 +70,7 @@ namespace APIEvent.Controllers
                                 Iva = Convert.ToDecimal(rd["iva"]),
                                 ValorTotalEvento = Convert.ToDecimal(rd["valor_total_evento"]),
                                 IdSuborganizacion = Convert.ToInt32(rd["id_suborganización1"]),
-                                IdTipoEvento = Convert.ToInt32(rd["id_tipo_evento1"])
+                                TipoEvento = rd["tipo_evento"].ToString()
                             });
                         }
                     }
@@ -121,7 +121,7 @@ namespace APIEvent.Controllers
                                 Iva = Convert.ToDecimal(rd["iva"]),
                                 ValorTotalEvento = Convert.ToDecimal(rd["valor_total_evento"]),
                                 IdSuborganizacion = Convert.ToInt32(rd["id_suborganización1"]),
-                                IdTipoEvento = Convert.ToInt32(rd["id_tipo_evento1"])
+                                TipoEvento = rd["tipo_evento"].ToString()
                             });
                         }
                     }
@@ -156,7 +156,7 @@ namespace APIEvent.Controllers
                         // Se agregan los parámetros necesarios para insertar un evento en la tabla correspondiente
                         cmd.Parameters.AddWithValue("@nombre", nombreEvento);
                         cmd.Parameters.AddWithValue("@descripcion", descripcion);
-                        cmd.Parameters.AddWithValue("@imagen", imagen;
+                        cmd.Parameters.AddWithValue("@imagen", imagen);
                         cmd.Parameters.AddWithValue("@fecha_inicio", fecha_inicio);
                         cmd.Parameters.AddWithValue("@fecha_final", fecha_final);
                         cmd.Parameters.AddWithValue("@lugar", lugar);

@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+https://go.microsoft.com/fwlink/?LinkID=208121.
+-->
+<Project>
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAs/PuaqjAbEqiReAaU/jAJgAAAAACAAAAAAAQZgAAAAEAACAAAACl8KIcLp1Qrbhwka2OUGSWBmulc54woDFrLrYdsYmCJgAAAAAOgAAAAAIAACAAAADoE+bMuOZbLPWDUlzSjFdxH4WxbusBPevZnFQ9gHxPdjAAAAAiMprXGKFVWdCRkJF5ySW82JYyTmAPXM6EA7ssU2weikJ+p7fQJqtPj5sPx/eraxdAAAAAtsGw8lXMHOR2TAcU5XA/riyf39jmbJCYFxs7Isq/wxOeqWwgi1978nmg0uW2gGc3Ug8txFggPUT0/fjhWv79VA==</EncryptedPassword>
+    <_PublishTargetUrl>ftp://timecheck.somee.com/www.timecheck.somee.com</_PublishTargetUrl>
+    <History>True|2023-05-02T22:23:48.4041219Z;False|2023-05-02T16:22:42.5261186-06:00;True|2023-05-02T16:11:01.6316785-06:00;False|2023-05-02T16:07:15.3268125-06:00;True|2023-05-02T13:04:30.6667707-06:00;</History>
+    <LastFailureDetails />
+  </PropertyGroup>
+  <ItemGroup>
+    <File Include="APIEvent.deps.json">
+      <publishTime>05/02/2023 16:22:53</publishTime>
+    </File>
+    <File Include="APIEvent.dll">
+      <publishTime>05/02/2023 16:22:53</publishTime>
+    </File>
+    <File Include="APIEvent.exe">
+      <publishTime>05/02/2023 16:22:53</publishTime>
+    </File>
+    <File Include="APIEvent.pdb">
+      <publishTime>05/02/2023 16:22:53</publishTime>
+    </File>
+    <File Include="APIEvent.runtimeconfig.json">
+      <publishTime>02/05/2023 13:02:58</publishTime>
+    </File>
+    <File Include="appsettings.Development.json">
+      <publishTime>04/25/2023 16:24:44</publishTime>
+    </File>
+    <File Include="appsettings.json">
+      <publishTime>04/29/2023 15:38:38</publishTime>
+    </File>
+    <File Include="CloudinaryDotNet.dll">
+      <publishTime>09/25/2022 10:05:52</publishTime>
+    </File>
+    <File Include="Microsoft.OpenApi.dll">
+      <publishTime>08/29/2020 15:14:12</publishTime>
+    </File>
+    <File Include="Newtonsoft.Json.Bson.dll">
+      <publishTime>03/22/2017 05:01:20</publishTime>
+    </File>
+    <File Include="Newtonsoft.Json.dll">
+      <publishTime>03/17/2021 14:03:36</publishTime>
+    </File>
+    <File Include="runtimes/unix/lib/netcoreapp2.1/System.Data.SqlClient.dll">
+      <publishTime>10/17/2022 18:26:02</publishTime>
+    </File>
+    <File Include="runtimes/win-arm64/native/sni.dll">
+      <publishTime>12/07/2017 06:24:24</publishTime>
+    </File>
+    <File Include="runtimes/win-x64/native/sni.dll">
+      <publishTime>12/07/2017 06:24:22</publishTime>
+    </File>
+    <File Include="runtimes/win-x86/native/sni.dll">
+      <publishTime>12/07/2017 06:24:22</publishTime>
+    </File>
+    <File Include="runtimes/win/lib/netcoreapp2.1/System.Data.SqlClient.dll">
+      <publishTime>10/17/2022 18:26:08</publishTime>
+    </File>
+    <File Include="Swashbuckle.AspNetCore.Swagger.dll">
+      <publishTime>11/01/2023 00:48:20</publishTime>
+    </File>
+    <File Include="Swashbuckle.AspNetCore.SwaggerGen.dll">
+      <publishTime>11/01/2023 00:48:24</publishTime>
+    </File>
+    <File Include="Swashbuckle.AspNetCore.SwaggerUI.dll">
+      <publishTime>11/01/2023 00:49:02</publishTime>
+    </File>
+    <File Include="System.Data.SqlClient.dll">
+      <publishTime>10/17/2022 18:16:04</publishTime>
+    </File>
+    <File Include="System.Net.Http.Formatting.dll">
+      <publishTime>05/27/2022 18:39:42</publishTime>
+    </File>
+    <File Include="System.Web.Cors.dll">
+      <publishTime>05/27/2022 18:41:44</publishTime>
+    </File>
+    <File Include="System.Web.Http.Cors.dll">
+      <publishTime>05/27/2022 18:42:16</publishTime>
+    </File>
+    <File Include="System.Web.Http.dll">
+      <publishTime>05/27/2022 18:41:46</publishTime>
+    </File>
+    <File Include="web.config">
+      <publishTime>05/02/2023 16:22:53</publishTime>
+    </File>
+  </ItemGroup>
+</Project>

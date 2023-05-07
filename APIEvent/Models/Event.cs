@@ -16,6 +16,7 @@
         public decimal ValorTotalEvento { get; set; }
         public int IdSuborganizacion { get; set; }
         public int IdTipoEvento { get; set; }
+        public string TipoEvento { get; set; }
 
     }
 }

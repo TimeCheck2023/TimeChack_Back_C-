@@ -144,6 +144,26 @@ namespace APIEvent.Controllers
         {
             try
             {
+
+                // Validar la longitud de la descripción
+                if (descripcion.Length > 150)
+                {
+                    return BadRequest("La descripción no puede exceder los 150 caracteres.");
+                }
+
+                // Validar las fechas
+                DateTime fechaActual = DateTime.Now;
+
+                if (fecha_inicio < fechaActual)
+                {
+                    return BadRequest("La fecha de inicio no puede ser anterior a la fecha actual.");
+                }
+
+                if (fecha_final < fecha_inicio)
+                {
+                    return BadRequest("La fecha final no puede ser anterior a la fecha de inicio.");
+                }
+
                 // Guardar evento en la base de datos
                 using (SqlConnection connection = new SqlConnection(cadenaSQL))
                 {
@@ -194,6 +214,26 @@ namespace APIEvent.Controllers
         {
             try
             {
+
+                // Validar la longitud de la descripción
+                if (descripcion.Length > 150)
+                {
+                    return BadRequest("La descripción no puede exceder los 150 caracteres.");
+                }
+
+                // Validar las fechas
+                DateTime fechaActual = DateTime.Now;
+
+                if (fecha_inicio < fechaActual)
+                {
+                    return BadRequest("La fecha de inicio no puede ser anterior a la fecha actual.");
+                }
+
+                if (fecha_final < fecha_inicio)
+                {
+                    return BadRequest("La fecha final no puede ser anterior a la fecha de inicio.");
+                }
+
 
                 // Subir imagen a Cloudinary
                 var cloudinary = new Cloudinary(new Account(cloudName, apiKey, apiSecret));

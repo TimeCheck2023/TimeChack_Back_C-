@@ -131,6 +131,43 @@ namespace APIEvent.Controllers
         }
 
 
+        // Endpoint para consultar si ya tiene una asistencia en un evento especificado
+        [HttpGet]
+        [Route("CheckAttendance")]
+        public IActionResult CheckAttendance(int idEvento, string correo)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+
+                    SqlCommand command = new SqlCommand("USP_ObtenerAsistenciaPorEventoYCorreo", connection);
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.AddWithValue("@idEvento", idEvento);
+                    command.Parameters.AddWithValue("@correo", correo);
+
+                    SqlParameter existsParameter = new SqlParameter("@exists", SqlDbType.Bit);
+                    existsParameter.Direction = ParameterDirection.Output;
+                    command.Parameters.Add(existsParameter);
+
+                    command.ExecuteNonQuery();
+
+                    bool exists = Convert.ToBoolean(existsParameter.Value);
+
+                    return Ok(exists);
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+
+
+
 
 
         //Endpoint para consultar los eventos que está pendiente un usuario 

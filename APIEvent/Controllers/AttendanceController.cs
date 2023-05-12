@@ -20,10 +20,9 @@ namespace APIEvent.Controllers
         }
 
 
-
-        //Endpoint para guardar una nueva asistencia en la DB
+        // Endpoint para insertar una asistencia
         [HttpPost]
-        [Route("Send")]
+        [Route("send")]
         public IActionResult InsertAttendance(Attendance attendance)
         {
             try
@@ -32,22 +31,15 @@ namespace APIEvent.Controllers
                 {
                     connection.Open();
 
-                    SqlCommand command = new SqlCommand("USP_InsertarAsistencia", connection);
+                    SqlCommand command = new SqlCommand("sp_InsertarAsistencia", connection);
                     command.CommandType = CommandType.StoredProcedure;
 
-                    command.Parameters.AddWithValue("@id_evento", attendance.EventId);
-                    command.Parameters.AddWithValue("@nro_documento_usuario", attendance.DocumentNumber);
+                    command.Parameters.AddWithValue("@eventId", attendance.EventId);
+                    command.Parameters.AddWithValue("@userEmail", attendance.UserEmail);
 
-                    int rowsAffected = command.ExecuteNonQuery();
+                    command.ExecuteNonQuery();
 
-                    if (rowsAffected > 0)
-                    {
-                        return Ok("Asistencia registrada correctamente.");
-                    }
-                    else
-                    {
-                        return BadRequest("No se pudo registrar la asistencia.");
-                    }
+                    return Ok("Asistencia insertada correctamente.");
                 }
             }
             catch (Exception ex)
@@ -55,6 +47,7 @@ namespace APIEvent.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
 
         [HttpGet]
         [Route("Consult/{Id}")]
@@ -136,5 +129,100 @@ namespace APIEvent.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
+
+
+
+        //Endpoint para consultar los eventos que está pendiente un usuario 
+        [HttpGet]
+        [Route("GetEventsUser/{email}")]
+        public IActionResult GetEventsWithPendingAttendance(string email)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+
+                    SqlCommand command = new SqlCommand("USP_ObtenerEventosAsistenciaPendiente", connection);
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.AddWithValue("@correoUsuario", email);
+
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    List<Attendance> events = new List<Attendance>();
+
+                    while (reader.Read())
+                    {
+                        Attendance eventItem = new Attendance();
+
+                        eventItem.EventId = (int)reader["id_evento"];
+                        eventItem.EventName = reader["nombre_evento"].ToString();
+                        eventItem.EventDescription = reader["descripcion_evento"].ToString();
+                        eventItem.EventImage = reader["imagen_evento"].ToString();
+                        eventItem.StartDate = (DateTime)reader["fecha_inicio_evento"];
+                        eventItem.EndDate = (DateTime)reader["fecha_final_evento"];
+                        eventItem.Location = reader["lugar_evento"].ToString();
+                        eventItem.Capacity = (int)reader["aforo_evento"];
+                        eventItem.TotalValue = (double)reader["valor_total_evento"];
+                        eventItem.EventType = reader["tipo_evento"].ToString();
+
+                        events.Add(eventItem);
+                    }
+
+                    return Ok(events);
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+
+        //Endpoint para cambiar el estado de asistencia a cancelado
+        [HttpPut]
+        [Route("CancelAttendance")]
+        public IActionResult CancelAttendance(Attendance attendance)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+
+                    SqlCommand command = new SqlCommand("USP_CambiarEstadoAsistenciaCancelado", connection);
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.AddWithValue("@correo_usuario", attendance.UserEmail);
+                    command.Parameters.AddWithValue("@id_evento", attendance.EventId);
+
+                    int rowsAffected = command.ExecuteNonQuery();
+
+                    if (rowsAffected > 0)
+                    {
+                        return Ok("Estado de asistencia actualizado correctamente.");
+                    }
+                    else
+                    {
+                        return BadRequest("No se encontró la asistencia para el correo y el evento especificados.");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+
+
+
+
+
+
+
+
     }
 }

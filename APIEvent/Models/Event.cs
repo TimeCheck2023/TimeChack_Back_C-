@@ -17,6 +17,9 @@
         public int IdSuborganizacion { get; set; }
         public int IdTipoEvento { get; set; }
         public string TipoEvento { get; set; }
+        public int CuposDisponibles { get; set; }
+        public int Likes { get; set; }
+
 
     }
 }

@@ -70,7 +70,9 @@ namespace APIEvent.Controllers
                                 Iva = Convert.ToDecimal(rd["iva"]),
                                 ValorTotalEvento = Convert.ToDecimal(rd["valor_total_evento"]),
                                 IdSuborganizacion = Convert.ToInt32(rd["id_suborganización1"]),
-                                TipoEvento = rd["tipo_evento"].ToString()
+                                TipoEvento = rd["tipo_evento"].ToString(),
+                                CuposDisponibles = Convert.ToInt32(rd["cupos_disponibles"]),
+                                Likes = Convert.ToInt32(rd["likes"])
                             });
                         }
                     }
@@ -121,7 +123,8 @@ namespace APIEvent.Controllers
                                 Iva = Convert.ToDecimal(rd["iva"]),
                                 ValorTotalEvento = Convert.ToDecimal(rd["valor_total_evento"]),
                                 IdSuborganizacion = Convert.ToInt32(rd["id_suborganización1"]),
-                                TipoEvento = rd["tipo_evento"].ToString()
+                                TipoEvento = rd["tipo_evento"].ToString(),
+                                CuposDisponibles = Convert.ToInt32(rd["cupos_disponibles"])
                             });
                         }
                     }

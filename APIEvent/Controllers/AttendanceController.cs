@@ -152,11 +152,16 @@ namespace APIEvent.Controllers
                     existsParameter.Direction = ParameterDirection.Output;
                     command.Parameters.Add(existsParameter);
 
+                    SqlParameter tipoAsistenciaParameter = new SqlParameter("@tipoAsistencia", SqlDbType.VarChar, 20);
+                    tipoAsistenciaParameter.Direction = ParameterDirection.Output;
+                    command.Parameters.Add(tipoAsistenciaParameter);
+
                     command.ExecuteNonQuery();
 
                     bool exists = Convert.ToBoolean(existsParameter.Value);
+                    string tipoAsistencia = tipoAsistenciaParameter.Value.ToString();
 
-                    return Ok(exists);
+                    return Ok(new { exists, tipoAsistencia });
                 }
             }
             catch (Exception ex)
@@ -164,6 +169,7 @@ namespace APIEvent.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
 
 
 
@@ -221,7 +227,7 @@ namespace APIEvent.Controllers
         //Endpoint para cambiar el estado de asistencia a cancelado
         [HttpPut]
         [Route("CancelAttendance")]
-        public IActionResult CancelAttendance(Attendance attendance)
+        public IActionResult CancelAttendance(string correoUsuario, int idEvento)
         {
             try
             {
@@ -232,19 +238,39 @@ namespace APIEvent.Controllers
                     SqlCommand command = new SqlCommand("USP_CambiarEstadoAsistenciaCancelado", connection);
                     command.CommandType = CommandType.StoredProcedure;
 
-                    command.Parameters.AddWithValue("@correo_usuario", attendance.UserEmail);
-                    command.Parameters.AddWithValue("@id_evento", attendance.EventId);
+                    command.Parameters.AddWithValue("@correo_usuario", correoUsuario);
+                    command.Parameters.AddWithValue("@id_evento", idEvento);
 
-                    int rowsAffected = command.ExecuteNonQuery();
+                    command.ExecuteNonQuery();
 
-                    if (rowsAffected > 0)
-                    {
-                        return Ok("Estado de asistencia actualizado correctamente.");
-                    }
-                    else
-                    {
-                        return BadRequest("No se encontró la asistencia para el correo y el evento especificados.");
-                    }
+                    return Ok("Estado de asistencia actualizado correctamente.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        //Endpoint para confirmar la asistencia al evento
+        [HttpPost]
+        [Route("ConfirmAttendance")]
+        public IActionResult ConfirmAttendance(string nroDocumentoUsuario)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+
+                    SqlCommand command = new SqlCommand("USP_CambiarEstadoAsistenciaConfirmado", connection);
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.AddWithValue("@nro_documento_usuario", nroDocumentoUsuario);
+
+                    command.ExecuteNonQuery();
+
+                    return Ok("Estado de asistencia actualizado correctamente.");
                 }
             }
             catch (Exception ex)

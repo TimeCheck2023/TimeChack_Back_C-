@@ -143,7 +143,7 @@ namespace APIEvent.Controllers
         //Endpoint para guardar un nuevo evento en la DB
         [HttpPost]
         [Route("Send")]
-        public IActionResult GuardarEvento(string nombreEvento, string descripcion, string imagen, DateTime fecha_inicio, DateTime fecha_final,string lugar, int aforo, int id_suborganizacion, int id_tipo_evento)
+        public IActionResult GuardarEvento(string nombreEvento, string descripcion, string imagen, DateTime fecha_inicio, DateTime fecha_final, string lugar, int aforo, int id_suborganizacion, int id_tipo_evento)
         {
             try
             {
@@ -279,8 +279,7 @@ namespace APIEvent.Controllers
 
 
 
-
-        //Endpoint para eliminar un evento de la DB
+        //Endpoint para eliminar un evento con todos sus registros
         [HttpDelete]
         [Route("Delete/{idEvento:int}")]
         public IActionResult EliminarEvento(int idEvento)
@@ -305,24 +304,40 @@ namespace APIEvent.Controllers
                     }
                 }
 
-                // Eliminar imagen de Cloudinary
-                var cloudinary = new Cloudinary(new Account(cloudName, apiKey, apiSecret));
-                var publicId = Path.GetFileNameWithoutExtension(imagenUrl);
-                var deletionParams = new DeletionParams(publicId) { ResourceType = ResourceType.Image };
-                cloudinary.Destroy(deletionParams);
-
-                // Eliminar evento de la base de datos
-                using (var conexion = new SqlConnection(cadenaSQL))
+                if (!string.IsNullOrEmpty(imagenUrl))
                 {
-                    conexion.Open();
-                    var cmd = new SqlCommand("USP_EliminarEvento", conexion);
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@id_evento", idEvento);
-                    cmd.ExecuteNonQuery();
-                }
+                    // Eliminar imagen de Cloudinary
+                    var cloudinary = new Cloudinary(new Account(cloudName, apiKey, apiSecret));
+                    var publicId = Path.GetFileNameWithoutExtension(imagenUrl);
+                    var deletionParams = new DeletionParams(publicId) { ResourceType = ResourceType.Image };
+                    var deletionResult = cloudinary.Destroy(deletionParams);
 
-                // Retornar mensaje de éxito
-                return StatusCode(StatusCodes.Status200OK, new { mensaje = "El evento se eliminó correctamente" });
+                    if (deletionResult.Result == "ok")
+                    {
+                        // Eliminar evento de la base de datos
+                        using (var conexion = new SqlConnection(cadenaSQL))
+                        {
+                            conexion.Open();
+                            var cmd = new SqlCommand("USP_EliminarEvento", conexion);
+                            cmd.CommandType = CommandType.StoredProcedure;
+                            cmd.Parameters.AddWithValue("@id_evento", idEvento);
+                            cmd.ExecuteNonQuery();
+                        }
+
+                        // Retornar mensaje de éxito
+                        return StatusCode(StatusCodes.Status200OK, new { mensaje = "El evento se eliminó correctamente" });
+                    }
+                    else
+                    {
+                        // Si la eliminación de la imagen falla, puedes manejar el error como desees
+                        return StatusCode(StatusCodes.Status500InternalServerError, new { mensaje = "Error al eliminar la imagen de Cloudinary" });
+                    }
+                }
+                else
+                {
+                    // Si la URL de la imagen está vacía, puedes manejarlo como desees
+                    return StatusCode(StatusCodes.Status400BadRequest, new { mensaje = "La URL de la imagen es inválida" });
+                }
             }
             catch (Exception error)
             {
@@ -334,7 +349,44 @@ namespace APIEvent.Controllers
 
 
 
-        
+        //Endpoint para obtener todos los tipos de eventos
+        [HttpGet]
+        [Route("get_event_types")]
+        public IActionResult GetEventsType()
+        {
+            List<Event> lista = new List<Event>();
+            try
+            {
+                //Se conecta la DB usando SqlConnection y la cadena de conexion
+                using (var conexion = new SqlConnection(cadenaSQL))
+                {
+                    //Se abre la conexion a la DB
+                    conexion.Open();
+                    //Se ejecuta el procedimiento USP_ObtenerTiposEventos
+                    var cmd = new SqlCommand("USP_ObtenerTiposEventos", conexion);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    using (var rd = cmd.ExecuteReader())
+                    {
+                        while (rd.Read())
+                        {
+                            lista.Add(new Event
+                            {
+                                //Se le asgina los campos respectivos
+                                TipoEvento = rd["tipo_evento"].ToString()
+                            });
+                        }
+                    }
+                }
+                //Retorna un mensaje "ok" si sale todo bien y un estado 200
+                return StatusCode(StatusCodes.Status200OK, new { mensaje = "ok", response = lista });
+            }
+            catch (Exception error)
+            {
+                //Retorna un mensaje de error si salió algo malo y un estado 500
+                return StatusCode(StatusCodes.Status500InternalServerError, new { mensaje = error.Message, response = lista });
+            }
+        }
+
 
 
 

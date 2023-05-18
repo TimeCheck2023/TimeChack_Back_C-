@@ -216,14 +216,13 @@ namespace APIEvent.Controllers
         }
 
 
-        //Endpoint para actualizar un evento en la DB
+        // Endpoint para actualizar un evento en la DB
         [HttpPut]
         [Route("Update/{IdEvento:int}")]
         public IActionResult ActualizarEvento(int IdEvento, string nombreEvento, string descripcion, string imagen, DateTime fecha_inicio, DateTime fecha_final, string lugar, int aforo, int id_tipo_evento)
         {
             try
             {
-
                 // Validar la longitud de la descripción
                 if (descripcion.Length > 150)
                 {
@@ -243,36 +242,65 @@ namespace APIEvent.Controllers
                     return BadRequest("La fecha final no puede ser anterior a la fecha de inicio.");
                 }
 
-
-                // Subir imagen a Cloudinary
-                var cloudinary = new Cloudinary(new Account(cloudName, apiKey, apiSecret));
-                var uploadResult = cloudinary.Upload(new ImageUploadParams
+                // Validar el aforo
+                if (aforo < 0)
                 {
-                    PublicId = nombreEvento,
-                    File = new FileDescription(imagen)
-                });
-
+                    return BadRequest("El valor de la cantidad de personas no puede ser negativo.");
+                }
 
                 using (var conexion = new SqlConnection(cadenaSQL))
                 {
                     conexion.Open();
-                    var cmd = new SqlCommand("USP_EditarEvento", conexion);
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    // Se agregan los parámetros necesarios del evento a actualizar
-                    cmd.Parameters.AddWithValue("@id_evento", IdEvento);
-                    cmd.Parameters.AddWithValue("@nombre", nombreEvento);
-                    cmd.Parameters.AddWithValue("@descripcion", descripcion);
-                    cmd.Parameters.AddWithValue("@imagen", uploadResult.Url.ToString());
-                    cmd.Parameters.AddWithValue("@fecha_inicio", fecha_inicio);
-                    cmd.Parameters.AddWithValue("@fecha_final", fecha_final);
-                    cmd.Parameters.AddWithValue("@lugar", lugar);
-                    cmd.Parameters.AddWithValue("@aforo", aforo);
-                    cmd.Parameters.AddWithValue("@valor", 0);
-                    cmd.Parameters.AddWithValue("@iva", 0);
-                    cmd.Parameters.AddWithValue("@valor_total", 0);
-                    cmd.Parameters.AddWithValue("@id_tipo_evento", id_tipo_evento);
-                    cmd.ExecuteNonQuery();
+
+                    // Obtener la imagen actual del evento
+                    string imagenActual = "";
+                    using (var obtenerImagenCmd = new SqlCommand("USP_ObtenerImagenEvento", conexion))
+                    {
+                        obtenerImagenCmd.CommandType = CommandType.StoredProcedure;
+                        obtenerImagenCmd.Parameters.AddWithValue("@id_evento", IdEvento);
+                        using (var reader = obtenerImagenCmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                imagenActual = reader["imagen_evento"].ToString();
+                            }
+                        }
+                    }
+
+                    // Si se proporciona una nueva imagen, eliminar la anterior
+                    if (!string.IsNullOrEmpty(imagen))
+                    {
+                        var cloudinary = new Cloudinary(new Account(cloudName, apiKey, apiSecret));
+                        var publicId = Path.GetFileNameWithoutExtension(imagenActual);
+                        var deletionParams = new DeletionParams(publicId) { ResourceType = ResourceType.Image };
+                        cloudinary.Destroy(deletionParams);
+                    }
+                    else
+                    {
+                        // Si no se proporciona una nueva imagen, utilizar la imagen actual
+                        imagen = imagenActual;
+                    }
+
+                    // Actualizar el evento en la base de datos
+                    using (var actualizarEventoCmd = new SqlCommand("USP_EditarEvento", conexion))
+                    {
+                        actualizarEventoCmd.CommandType = CommandType.StoredProcedure;
+                        actualizarEventoCmd.Parameters.AddWithValue("@id_evento", IdEvento);
+                        actualizarEventoCmd.Parameters.AddWithValue("@nombre", nombreEvento);
+                        actualizarEventoCmd.Parameters.AddWithValue("@descripcion", descripcion);
+                        actualizarEventoCmd.Parameters.AddWithValue("@imagen", imagen);
+                        actualizarEventoCmd.Parameters.AddWithValue("@fecha_inicio", fecha_inicio);
+                        actualizarEventoCmd.Parameters.AddWithValue("@fecha_final", fecha_final);
+                        actualizarEventoCmd.Parameters.AddWithValue("@lugar", lugar);
+                        actualizarEventoCmd.Parameters.AddWithValue("@aforo", aforo);
+                        actualizarEventoCmd.Parameters.AddWithValue("@valor", 0);
+                        actualizarEventoCmd.Parameters.AddWithValue("@iva", 0);
+                        actualizarEventoCmd.Parameters.AddWithValue("@valor_total", 0);
+                        actualizarEventoCmd.Parameters.AddWithValue("@id_tipo_evento", id_tipo_evento);
+                        actualizarEventoCmd.ExecuteNonQuery();
+                    }
                 }
+
                 // Se retorna un mensaje de éxito
                 return StatusCode(StatusCodes.Status200OK, new { mensaje = "El evento se actualizó correctamente" });
             }
@@ -283,9 +311,7 @@ namespace APIEvent.Controllers
             }
         }
 
-
-
-        //Endpoint para eliminar un evento con todos sus registros
+        // Endpoint para eliminar un evento con todos sus registros
         [HttpDelete]
         [Route("Delete/{idEvento:int}")]
         public IActionResult EliminarEvento(int idEvento)
@@ -304,7 +330,7 @@ namespace APIEvent.Controllers
                     {
                         if (reader.Read())
                         {
-                            //se obtiene el campo de la imagen en la DB y se guarda en imagenUrl
+                            // Se obtiene el campo de la imagen en la DB y se guarda en imagenUrl
                             imagenUrl = reader["imagen_evento"].ToString();
                         }
                     }
@@ -320,7 +346,7 @@ namespace APIEvent.Controllers
 
                     if (deletionResult.Result == "ok")
                     {
-                        // Eliminar evento de la base de datos
+                        // Eliminar evento y registros relacionados de la base de datos
                         using (var conexion = new SqlConnection(cadenaSQL))
                         {
                             conexion.Open();
@@ -347,7 +373,7 @@ namespace APIEvent.Controllers
             }
             catch (Exception error)
             {
-                // Si hay algún error se retorna un mensaje de error
+                // Si hay algún error, se retorna un mensaje de error
                 return StatusCode(StatusCodes.Status500InternalServerError, new { mensaje = error.Message });
             }
         }

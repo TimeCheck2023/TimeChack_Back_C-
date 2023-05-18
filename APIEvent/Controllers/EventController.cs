@@ -167,6 +167,12 @@ namespace APIEvent.Controllers
                     return BadRequest("La fecha final no puede ser anterior a la fecha de inicio.");
                 }
 
+                // Validar el aforo
+                if (aforo < 0)
+                {
+                    return BadRequest("El valor de la cantidad de personas no puede ser negativo!");
+                }
+
                 // Guardar evento en la base de datos
                 using (SqlConnection connection = new SqlConnection(cadenaSQL))
                 {

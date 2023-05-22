@@ -20,6 +20,16 @@ namespace APIEvent.Controllers
         }
 
 
+
+        /// <summary>
+        /// Endpoint para insertar una asistencia.
+        /// </summary>
+        /// <param name="attendance">Objeto Attendance con los datos de la asistencia.</param>
+        /// <returns>
+        /// Retorna un objeto IActionResult que indica el resultado de la operación.
+        /// Si la asistencia se inserta correctamente, devuelve un objeto StatusCode con el estado 200 y un mensaje de éxito.
+        /// Si hay un error interno en el servidor, devuelve un objeto StatusCode con el estado 500 y un mensaje de error.
+        /// </returns>
         // Endpoint para insertar una asistencia
         [HttpPost]
         [Route("send")]
@@ -49,88 +59,22 @@ namespace APIEvent.Controllers
         }
 
 
-        [HttpGet]
-        [Route("Consult/{Id}")]
-        public IActionResult GetAttendance(int Id)
-        {
-            try
-            {
-                using (SqlConnection connection = new SqlConnection(connectionString))
-                {
-                    connection.Open();
-
-                    SqlCommand command = new SqlCommand("USP_ObtenerAsistencia", connection);
-                    command.CommandType = CommandType.StoredProcedure;
-
-                    command.Parameters.AddWithValue("@id_asistencia_evento", Id);
-
-                    var reader = command.ExecuteReader();
-
-                    if (reader.HasRows)
-                    {
-                        Attendance attendance = new Attendance();
-
-                        while (reader.Read())
-                        {
-                            attendance.Id = (int)reader["id_asistencia_evento"];
-                            attendance.EventId = (int)reader["id_evento"];
-                            attendance.DocumentNumber = reader["nro_documento_usuario"].ToString();
-                            attendance.Status = reader["estado_asistencia"].ToString();
-                        }
-
-                        return Ok(attendance);
-                    }
-                    else
-                    {
-                        return BadRequest("No se encontró la asistencia.");
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
-        }
 
 
 
-        //Endpoint para actualizar un evento en la DB
-        [HttpPut]
-        [Route("Update/{Id:int}")]
-        public IActionResult UpdateAttendance(int eventId, string documentNumber, string status)
-        {
-            try
-            {
-                using (SqlConnection connection = new SqlConnection(connectionString))
-                {
-                    connection.Open();
-
-                    SqlCommand command = new SqlCommand("USP_ActualizarEstadoAsistencia", connection);
-                    command.CommandType = CommandType.StoredProcedure;
-
-                    command.Parameters.AddWithValue("@id_evento", eventId);
-                    command.Parameters.AddWithValue("@nro_documento_usuario", documentNumber);
-                    command.Parameters.AddWithValue("@estado_asistencia", status);
-
-                    int rowsAffected = command.ExecuteNonQuery();
-
-                    if (rowsAffected > 0)
-                    {
-                        return Ok("Estado de asistencia actualizado correctamente.");
-                    }
-                    else
-                    {
-                        return BadRequest("No se pudo actualizar el estado de asistencia.");
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
-        }
 
 
+
+        /// <summary>
+        /// Endpoint para consultar si un usuario tiene una asistencia en un evento específico.
+        /// </summary>
+        /// <param name="idEvento">ID del evento.</param>
+        /// <param name="correo">Correo del usuario.</param>
+        /// <returns>
+        /// Retorna un objeto IActionResult que indica el resultado de la operación.
+        /// Si se encuentra la asistencia, devuelve un objeto StatusCode con el estado 200 y un objeto anónimo con las propiedades "exists" (indicando si existe o no la asistencia) y "tipoAsistencia" (tipo de asistencia).
+        /// Si hay un error interno en el servidor, devuelve un objeto StatusCode con el estado 500 y un mensaje de error.
+        /// </returns>
         // Endpoint para consultar si ya tiene una asistencia en un evento especificado
         [HttpGet]
         [Route("CheckAttendance")]
@@ -172,58 +116,16 @@ namespace APIEvent.Controllers
 
 
 
-
-
-
-
-        //Endpoint para consultar los eventos que está pendiente un usuario 
-        [HttpGet]
-        [Route("GetEventsUser/{email}")]
-        public IActionResult GetEventsWithPendingAttendance(string email)
-        {
-            try
-            {
-                using (SqlConnection connection = new SqlConnection(connectionString))
-                {
-                    connection.Open();
-
-                    SqlCommand command = new SqlCommand("USP_ObtenerEventosAsistenciaPendiente", connection);
-                    command.CommandType = CommandType.StoredProcedure;
-
-                    command.Parameters.AddWithValue("@correoUsuario", email);
-
-                    SqlDataReader reader = command.ExecuteReader();
-
-                    List<Attendance> events = new List<Attendance>();
-
-                    while (reader.Read())
-                    {
-                        Attendance eventItem = new Attendance();
-
-                        eventItem.EventId = (int)reader["id_evento"];
-                        eventItem.EventName = reader["nombre_evento"].ToString();
-                        eventItem.EventDescription = reader["descripcion_evento"].ToString();
-                        eventItem.EventImage = reader["imagen_evento"].ToString();
-                        eventItem.StartDate = (DateTime)reader["fecha_inicio_evento"];
-                        eventItem.EndDate = (DateTime)reader["fecha_final_evento"];
-                        eventItem.Location = reader["lugar_evento"].ToString();
-                        eventItem.Capacity = (int)reader["aforo_evento"];
-                        eventItem.TotalValue = (double)reader["valor_total_evento"];
-                        eventItem.EventType = reader["tipo_evento"].ToString();
-
-                        events.Add(eventItem);
-                    }
-
-                    return Ok(events);
-                }
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
-        }
-
-
+        /// <summary>
+        /// Endpoint para cancelar una asistencia.
+        /// </summary>
+        /// <param name="correoUsuario">Correo del usuario.</param>
+        /// <param name="idEvento">ID del evento.</param>
+        /// <returns>
+        /// Retorna un objeto IActionResult que indica el resultado de la operación.
+        /// Si se cancela la asistencia correctamente, devuelve un objeto StatusCode con el estado 200 y un mensaje de éxito.
+        /// Si hay un error interno en el servidor, devuelve un objeto StatusCode con el estado 500 y un mensaje de error.
+        /// </returns>
         //Endpoint para cambiar el estado de asistencia a cancelado
         [HttpPut]
         [Route("CancelAttendance")]
@@ -252,6 +154,16 @@ namespace APIEvent.Controllers
             }
         }
 
+
+        /// <summary>
+        /// Endpoint para confirmar una asistencia.
+        /// </summary>
+        /// <param name="nroDocumentoUsuario">Número de documento del usuario.</param>
+        /// <returns>
+        /// Retorna un objeto IActionResult que indica el resultado de la operación.
+        /// Si se confirma la asistencia correctamente, devuelve un objeto StatusCode con el estado 200 y un mensaje de éxito.
+        /// Si hay un error interno en el servidor, devuelve un objeto StatusCode con el estado 500 y un mensaje de error.
+        /// </returns>
         //Endpoint para confirmar la asistencia al evento
         [HttpPost]
         [Route("ConfirmAttendance")]

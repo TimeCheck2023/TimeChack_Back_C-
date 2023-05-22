@@ -19,6 +19,15 @@ namespace APIEvent.Controllers
 
 
         // Endpoint para listar las suborganizaciones
+        /// <summary>
+        /// Obtiene una lista de suborganizaciones.
+        /// </summary>
+        /// <returns>
+        /// Retorna un objeto IActionResult que indica el resultado de la operación.
+        /// Si se encuentran suborganizaciones, devuelve un objeto StatusCode con el estado 200 y una lista de objetos User con los datos de las suborganizaciones.
+        /// Si no se encuentran suborganizaciones, devuelve un objeto StatusCode con el estado 200 y una lista vacía.
+        /// Si hay un error interno en el servidor, devuelve un objeto StatusCode con el estado 500 y un mensaje de error.
+        /// </returns>
         [HttpGet]
         [Route("List")]
         public IActionResult List()

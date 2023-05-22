@@ -83,3 +83,45 @@ D:\YAOP\TimeChack_Back_C-\APIEvent\obj\Release\net6.0\refint\APIEvent.dll
 D:\YAOP\TimeChack_Back_C-\APIEvent\obj\Release\net6.0\APIEvent.pdb
 D:\YAOP\TimeChack_Back_C-\APIEvent\obj\Release\net6.0\APIEvent.genruntimeconfig.cache
 D:\YAOP\TimeChack_Back_C-\APIEvent\obj\Release\net6.0\ref\APIEvent.dll
+D:\Nueva carpeta (3)\TimeChack_Back_C-\APIEvent\obj\Release\net6.0\APIEvent.csproj.AssemblyReference.cache
+D:\Nueva carpeta (3)\TimeChack_Back_C-\APIEvent\obj\Release\net6.0\APIEvent.GeneratedMSBuildEditorConfig.editorconfig
+D:\Nueva carpeta (3)\TimeChack_Back_C-\APIEvent\obj\Release\net6.0\APIEvent.AssemblyInfoInputs.cache
+D:\Nueva carpeta (3)\TimeChack_Back_C-\APIEvent\obj\Release\net6.0\APIEvent.AssemblyInfo.cs
+D:\Nueva carpeta (3)\TimeChack_Back_C-\APIEvent\obj\Release\net6.0\APIEvent.csproj.CoreCompileInputs.cache
+D:\Nueva carpeta (3)\TimeChack_Back_C-\APIEvent\obj\Release\net6.0\APIEvent.MvcApplicationPartsAssemblyInfo.cs
+D:\Nueva carpeta (3)\TimeChack_Back_C-\APIEvent\obj\Release\net6.0\APIEvent.MvcApplicationPartsAssemblyInfo.cache
+D:\Nueva carpeta (3)\TimeChack_Back_C-\APIEvent\obj\Release\net6.0\APIEvent.dll
+D:\Nueva carpeta (3)\TimeChack_Back_C-\APIEvent\obj\Release\net6.0\refint\APIEvent.dll
+D:\Nueva carpeta (3)\TimeChack_Back_C-\APIEvent\obj\Release\net6.0\APIEvent.pdb
+D:\Nueva carpeta (3)\TimeChack_Back_C-\APIEvent\bin\Release\net6.0\appsettings.Development.json
+D:\Nueva carpeta (3)\TimeChack_Back_C-\APIEvent\bin\Release\net6.0\appsettings.json
+D:\Nueva carpeta (3)\TimeChack_Back_C-\APIEvent\bin\Release\net6.0\APIEvent.exe
+D:\Nueva carpeta (3)\TimeChack_Back_C-\APIEvent\bin\Release\net6.0\APIEvent.deps.json
+D:\Nueva carpeta (3)\TimeChack_Back_C-\APIEvent\bin\Release\net6.0\APIEvent.runtimeconfig.json
+D:\Nueva carpeta (3)\TimeChack_Back_C-\APIEvent\bin\Release\net6.0\APIEvent.dll
+D:\Nueva carpeta (3)\TimeChack_Back_C-\APIEvent\bin\Release\net6.0\APIEvent.pdb
+D:\Nueva carpeta (3)\TimeChack_Back_C-\APIEvent\bin\Release\net6.0\CloudinaryDotNet.dll
+D:\Nueva carpeta (3)\TimeChack_Back_C-\APIEvent\bin\Release\net6.0\System.Web.Cors.dll
+D:\Nueva carpeta (3)\TimeChack_Back_C-\APIEvent\bin\Release\net6.0\System.Net.Http.Formatting.dll
+D:\Nueva carpeta (3)\TimeChack_Back_C-\APIEvent\bin\Release\net6.0\System.Web.Http.dll
+D:\Nueva carpeta (3)\TimeChack_Back_C-\APIEvent\bin\Release\net6.0\System.Web.Http.Cors.dll
+D:\Nueva carpeta (3)\TimeChack_Back_C-\APIEvent\bin\Release\net6.0\Microsoft.OpenApi.dll
+D:\Nueva carpeta (3)\TimeChack_Back_C-\APIEvent\bin\Release\net6.0\Newtonsoft.Json.dll
+D:\Nueva carpeta (3)\TimeChack_Back_C-\APIEvent\bin\Release\net6.0\Newtonsoft.Json.Bson.dll
+D:\Nueva carpeta (3)\TimeChack_Back_C-\APIEvent\bin\Release\net6.0\Swashbuckle.AspNetCore.Annotations.dll
+D:\Nueva carpeta (3)\TimeChack_Back_C-\APIEvent\bin\Release\net6.0\Swashbuckle.AspNetCore.Swagger.dll
+D:\Nueva carpeta (3)\TimeChack_Back_C-\APIEvent\bin\Release\net6.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+D:\Nueva carpeta (3)\TimeChack_Back_C-\APIEvent\bin\Release\net6.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+D:\Nueva carpeta (3)\TimeChack_Back_C-\APIEvent\bin\Release\net6.0\System.Data.SqlClient.dll
+D:\Nueva carpeta (3)\TimeChack_Back_C-\APIEvent\bin\Release\net6.0\runtimes\win-arm64\native\sni.dll
+D:\Nueva carpeta (3)\TimeChack_Back_C-\APIEvent\bin\Release\net6.0\runtimes\win-x64\native\sni.dll
+D:\Nueva carpeta (3)\TimeChack_Back_C-\APIEvent\bin\Release\net6.0\runtimes\win-x86\native\sni.dll
+D:\Nueva carpeta (3)\TimeChack_Back_C-\APIEvent\bin\Release\net6.0\runtimes\unix\lib\netcoreapp2.1\System.Data.SqlClient.dll
+D:\Nueva carpeta (3)\TimeChack_Back_C-\APIEvent\bin\Release\net6.0\runtimes\win\lib\netcoreapp2.1\System.Data.SqlClient.dll
+D:\Nueva carpeta (3)\TimeChack_Back_C-\APIEvent\obj\Release\net6.0\staticwebassets.build.json
+D:\Nueva carpeta (3)\TimeChack_Back_C-\APIEvent\obj\Release\net6.0\staticwebassets.development.json
+D:\Nueva carpeta (3)\TimeChack_Back_C-\APIEvent\obj\Release\net6.0\scopedcss\bundle\APIEvent.styles.css
+D:\Nueva carpeta (3)\TimeChack_Back_C-\APIEvent\obj\Release\net6.0\APIEvent.csproj.CopyComplete
+D:\Nueva carpeta (3)\TimeChack_Back_C-\APIEvent\obj\Release\net6.0\APIEvent.genruntimeconfig.cache
+D:\Nueva carpeta (3)\TimeChack_Back_C-\APIEvent\obj\Release\net6.0\ref\APIEvent.dll
+D:\TimeChack_Back_C-\APIEvent\bin\Release\net6.0\Swashbuckle.AspNetCore.Annotations.dll

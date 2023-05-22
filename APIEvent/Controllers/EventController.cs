@@ -9,6 +9,13 @@ using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using System.Data.SqlClient;
 
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.SwaggerGen;
+using Swashbuckle.AspNetCore;
+using System.Reflection;
+using Swashbuckle.AspNetCore.Annotations;
+
+
 
 
 namespace APIEvent.Controllers
@@ -34,9 +41,16 @@ namespace APIEvent.Controllers
             apiSecret = cloudinarySettings.GetValue<string>("ApiSecret");
         }
 
+
+        /// <summary>
+        /// Lista los eventos
+        /// </summary>
+        /// <returns>Devuelve una lista de eventos</returns>
         //Endpoint para listar los eventos
         [HttpGet]
         [Route("List")]
+        [SwaggerOperation(Summary = "Lista los eventos")]
+
         public IActionResult Lista()
         {
             List<Event> lista = new List<Event>();
@@ -89,10 +103,16 @@ namespace APIEvent.Controllers
 
 
 
+        /// <summary>
+        /// Obtiene un evento por su ID
+        /// </summary>
+        /// <param name="IdEvento">ID del evento</param>
+        /// <returns>Devuelve un evento</returns>
         //Endpoint para obtener un solo evento
         [HttpGet]
         [Route("Consult/{IdEvento:int}")]
         //Se le pide un parametro el cual es el id del evento
+        [SwaggerOperation(Summary = "Obtiene un evento por su ID")]
         public IActionResult Obtener(int IdEvento)
         {
             List<Event> lista = new List<Event>();
@@ -140,9 +160,33 @@ namespace APIEvent.Controllers
 
 
 
+
+        /// <summary>
+        /// Guarda un nuevo evento en la DB
+        /// </summary>
+        /// <param name="nombreEvento">Nombre del evento</param>
+        /// <param name="descripcion">Descripción del evento</param>
+        /// <param name="imagen">Url de la imagen del evento desde Cloudinary</param>
+        /// <param name="fecha_inicio">Fecha de inicio del evento</param>
+        /// <param name="fecha_final">Fecha del final del evento</param>
+        /// <param name="lugar">Lugar del evento</param>
+        /// <param name="aforo">Capcacidad de personas para el evento</param>
+        /// <param name="id_suborganizacion">ID de la suborganización que creó el evento</param>
+        /// <param name="id_tipo_evento">ID del tipo de evento o categoria</param>
+        /// <returns>
+        /// Retorna un objeto de tipo IActionResult que indica el resultado de la operación.
+        /// Si el evento se guarda correctamente, devuelve un objeto Ok() con el estado 200.
+        /// Si hay errores en los parámetros proporcionados, devuelve un objeto BadRequest con el estado 400 y un mensaje de error.
+        /// Si hay un error interno en el servidor, devuelve un objeto BadRequest con el estado 500 y un mensaje de error.
+        /// </returns>
+
         //Endpoint para guardar un nuevo evento en la DB
         [HttpPost]
         [Route("Send")]
+        [SwaggerOperation(Summary = "Guarda un nuevo evento en la base de datos")]
+        [SwaggerResponse(StatusCodes.Status200OK, "El evento se guardó correctamente")]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, "Error en los parámetros proporcionados")]
+        [SwaggerResponse(StatusCodes.Status500InternalServerError, "Error interno del servidor")]
         public IActionResult GuardarEvento(string nombreEvento, string descripcion, string imagen, DateTime fecha_inicio, DateTime fecha_final, string lugar, int aforo, int id_suborganizacion, int id_tipo_evento)
         {
             try
@@ -215,6 +259,24 @@ namespace APIEvent.Controllers
             }
         }
 
+        /// <summary>
+        /// Actualiza los campos de un evento por su ID
+        /// </summary>
+        /// <param name="IdEvento"></param>
+        /// <param name="nombreEvento">Nombre del evento</param>
+        /// <param name="descripcion">Descripción del evento</param>
+        /// <param name="imagen">Url de la imagen del evento desde Cloudinary</param>
+        /// <param name="fecha_inicio">Fecha de inicio del evento</param>
+        /// <param name="fecha_final">Fecha del final del evento</param>
+        /// <param name="lugar">Lugar del evento</param>
+        /// <param name="aforo">Capcacidad de personas para el evento</param>
+        /// <param name="id_tipo_evento">ID del tipo de evento o categoria</param>
+        /// <returns>
+        /// Retorna un objeto de tipo IActionResult que indica el resultado de la operación.
+        /// Si el evento se actualiza correctamente, devuelve un objeto StatusCode con el estado 200 y un mensaje de éxito.
+        /// Si hay errores en los parámetros proporcionados, devuelve un objeto BadRequest con el estado 400 y un mensaje de error.
+        /// Si hay un error interno en el servidor, devuelve un objeto StatusCode con el estado 500 y un mensaje de error.
+        /// </returns>
 
         // Endpoint para actualizar un evento en la DB
         [HttpPut]
@@ -311,6 +373,19 @@ namespace APIEvent.Controllers
             }
         }
 
+
+        /// <summary>
+        /// Elimina un evento por su ID
+        /// </summary>
+        /// <param name="idEvento">ID dek evebti</param>
+        /// <returns>
+        /// Retorna un objeto de tipo IActionResult que indica el resultado de la operación.
+        /// Si el evento se elimina correctamente, devuelve un objeto StatusCode con el estado 200 y un mensaje de éxito.
+        /// Si la URL de la imagen es inválida, devuelve un objeto BadRequest con el estado 400 y un mensaje de error.
+        /// Si hay un error al eliminar la imagen de Cloudinary, devuelve un objeto StatusCode con el estado 500 y un mensaje de error.
+        /// Si hay un error interno en el servidor, devuelve un objeto StatusCode con el estado 500 y un mensaje de error.
+        /// </returns>
+
         // Endpoint para eliminar un evento con todos sus registros
         [HttpDelete]
         [Route("Delete/{idEvento:int}")]
@@ -381,9 +456,19 @@ namespace APIEvent.Controllers
 
 
 
-        //Endpoint para obtener todos los tipos de eventos
+        /// <summary>
+        /// Obtiene todos los tipos de eventos
+        /// </summary>
+        /// <returns>
+        /// Retorna un objeto de tipo IActionResult que indica el resultado de la operación.
+        /// Si se obtienen los tipos de eventos correctamente, devuelve un objeto StatusCode con el estado 200 y una lista de objetos Event.
+        /// Si hay un error interno en el servidor, devuelve un objeto StatusCode con el estado 500 y un mensaje de error.
+        /// </returns>
+
         [HttpGet]
         [Route("get_event_types")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Event>))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(string))]
         public IActionResult GetEventsType()
         {
             List<Event> lista = new List<Event>();

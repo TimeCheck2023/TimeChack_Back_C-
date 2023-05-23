@@ -125,3 +125,5 @@ D:\Nueva carpeta (3)\TimeChack_Back_C-\APIEvent\obj\Release\net6.0\APIEvent.cspr
 D:\Nueva carpeta (3)\TimeChack_Back_C-\APIEvent\obj\Release\net6.0\APIEvent.genruntimeconfig.cache
 D:\Nueva carpeta (3)\TimeChack_Back_C-\APIEvent\obj\Release\net6.0\ref\APIEvent.dll
 D:\TimeChack_Back_C-\APIEvent\bin\Release\net6.0\Swashbuckle.AspNetCore.Annotations.dll
+D:\TimeChack_Back_C-\APIEvent\bin\Release\net6.0\APIEvent.xml
+D:\TimeChack_Back_C-\APIEvent\obj\Release\net6.0\APIEvent.xml

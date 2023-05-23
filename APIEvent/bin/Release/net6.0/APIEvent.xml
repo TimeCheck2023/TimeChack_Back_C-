@@ -137,5 +137,28 @@
             Si hay un error interno en el servidor, devuelve un objeto StatusCode con el estado 500 y un mensaje de error.
             </returns>
         </member>
+        <member name="M:APIEvent.Controllers.UserController.NuevoMiembro(APIEvent.Models.Miembro)">
+            <summary>
+            Agrega un nuevo miembro a la tabla Miembros.
+            </summary>
+            <param name="miembro">Objeto User con los datos del nuevo miembro.</param>
+            <returns>
+            Retorna un objeto IActionResult que indica el resultado de la operación.
+            Si el miembro se ha agregado correctamente, devuelve un objeto StatusCode con el estado 200 y un mensaje de éxito.
+            Si hay un error interno en el servidor, devuelve un objeto StatusCode con el estado 500 y un mensaje de error.
+            </returns>
+        </member>
+        <member name="M:APIEvent.Controllers.UserController.UsuariosSinSuborganizacion(System.Int32)">
+            <summary>
+            Obtiene una lista de usuarios que no pertenecen a una suborganización específica.
+            </summary>
+            <param name="idSuborganizacion">ID de la suborganización para la cual se desea obtener los usuarios.</param>
+            <returns>
+            Retorna un objeto IActionResult que indica el resultado de la operación.
+            Si se encuentran usuarios, devuelve un objeto StatusCode con el estado 200 y una lista de objetos User con los datos de los usuarios.
+            Si no se encuentran usuarios, devuelve un objeto StatusCode con el estado 200 y una lista vacía.
+            Si hay un error interno en el servidor, devuelve un objeto StatusCode con el estado 500 y un mensaje de error.
+            </returns>
+        </member>
     </members>
 </doc>

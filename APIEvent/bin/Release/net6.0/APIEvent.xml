@@ -138,6 +138,17 @@
             Si hay un error interno en el servidor, devuelve un objeto StatusCode con el estado 500 y un mensaje de error.
             </returns>
         </member>
+        <member name="M:APIEvent.Controllers.MemberController.EditarRolMiembro(APIEvent.Models.Miembro)">
+            <summary>
+            Edita el rol de un miembro en la tabla Miembro.
+            </summary>
+            <param name="miembro">Objeto que contiene los datos del miembro a editar.</param>
+            <returns>
+            Retorna un objeto IActionResult que indica el resultado de la operación.
+            Si el rol se ha editado correctamente, devuelve un objeto StatusCode con el estado 200 y un mensaje de éxito.
+            Si hay un error interno en el servidor, devuelve un objeto StatusCode con el estado 500 y un mensaje de error.
+            </returns>
+        </member>
         <member name="M:APIEvent.Controllers.UserController.List">
             <summary>
             Obtiene una lista de suborganizaciones.

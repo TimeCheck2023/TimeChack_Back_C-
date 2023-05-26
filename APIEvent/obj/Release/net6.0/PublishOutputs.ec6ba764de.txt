@@ -13,6 +13,7 @@ D:\YAOP\TimeChack_Back_C-\APIEvent\obj\Release\net6.0\PubTmp\Out\System.Web.Http
 D:\YAOP\TimeChack_Back_C-\APIEvent\obj\Release\net6.0\PubTmp\Out\Microsoft.OpenApi.dll
 D:\YAOP\TimeChack_Back_C-\APIEvent\obj\Release\net6.0\PubTmp\Out\Newtonsoft.Json.dll
 D:\YAOP\TimeChack_Back_C-\APIEvent\obj\Release\net6.0\PubTmp\Out\Newtonsoft.Json.Bson.dll
+D:\YAOP\TimeChack_Back_C-\APIEvent\obj\Release\net6.0\PubTmp\Out\Swashbuckle.AspNetCore.Annotations.dll
 D:\YAOP\TimeChack_Back_C-\APIEvent\obj\Release\net6.0\PubTmp\Out\Swashbuckle.AspNetCore.Swagger.dll
 D:\YAOP\TimeChack_Back_C-\APIEvent\obj\Release\net6.0\PubTmp\Out\Swashbuckle.AspNetCore.SwaggerGen.dll
 D:\YAOP\TimeChack_Back_C-\APIEvent\obj\Release\net6.0\PubTmp\Out\Swashbuckle.AspNetCore.SwaggerUI.dll
@@ -22,3 +23,4 @@ D:\YAOP\TimeChack_Back_C-\APIEvent\obj\Release\net6.0\PubTmp\Out\runtimes\win-x6
 D:\YAOP\TimeChack_Back_C-\APIEvent\obj\Release\net6.0\PubTmp\Out\runtimes\win-x86\native\sni.dll
 D:\YAOP\TimeChack_Back_C-\APIEvent\obj\Release\net6.0\PubTmp\Out\runtimes\unix\lib\netcoreapp2.1\System.Data.SqlClient.dll
 D:\YAOP\TimeChack_Back_C-\APIEvent\obj\Release\net6.0\PubTmp\Out\runtimes\win\lib\netcoreapp2.1\System.Data.SqlClient.dll
+D:\YAOP\TimeChack_Back_C-\APIEvent\obj\Release\net6.0\PubTmp\Out\APIEvent.xml

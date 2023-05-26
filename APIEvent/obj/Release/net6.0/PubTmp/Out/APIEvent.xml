@@ -126,6 +126,18 @@
             Si hay un error interno en el servidor, devuelve un objeto StatusCode con el estado 500 y un mensaje de error.
             </returns>
         </member>
+        <member name="M:APIEvent.Controllers.MemberController.EliminarMiembro(System.String,System.Int32)">
+            <summary>
+            Elimina un miembro de la tabla Miembro.
+            </summary>
+            <param name="nroDocumentoUsuario">Número de documento del usuario a eliminar.</param>
+            <param name="idSuborganizacion">ID de la suborganización a la que pertenece el miembro.</param>
+            <returns>
+            Retorna un objeto IActionResult que indica el resultado de la operación.
+            Si el miembro se ha eliminado correctamente, devuelve un objeto StatusCode con el estado 200 y un mensaje de éxito.
+            Si hay un error interno en el servidor, devuelve un objeto StatusCode con el estado 500 y un mensaje de error.
+            </returns>
+        </member>
         <member name="M:APIEvent.Controllers.UserController.List">
             <summary>
             Obtiene una lista de suborganizaciones.

@@ -162,6 +162,19 @@
             Si hay un error interno en el servidor, devuelve un objeto StatusCode con el estado 500 y un mensaje de error.
             </returns>
         </member>
+        <member name="M:APIEvent.Controllers.PasswordController.UpdatePasswordOrg(APIEvent.Models.PasswordOrg)">
+            <summary>
+            Actualiza la contraseña de un usuario.
+            </summary>
+            <param name="model">Objeto que contiene los datos necesarios para la actualización de contraseña.</param>
+            <returns>
+            Retorna un objeto IActionResult que indica el resultado de la operación.
+            Si la contraseña se ha actualizado correctamente, devuelve un objeto StatusCode con el estado 200 y un mensaje de éxito.
+            Si la contraseña actual ingresada es incorrecta, devuelve un objeto StatusCode con el estado 400 y un mensaje de error.
+            Si la nueva contraseña es igual a la actual, devuelve un objeto StatusCode con el estado 400 y un mensaje de error.
+            Si hay un error interno en el servidor, devuelve un objeto StatusCode con el estado 500 y un mensaje de error.
+            </returns>
+        </member>
         <member name="M:APIEvent.Controllers.UserController.List">
             <summary>
             Obtiene una lista de suborganizaciones.

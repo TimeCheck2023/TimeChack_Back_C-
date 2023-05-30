@@ -467,11 +467,11 @@ namespace APIEvent.Controllers
 
         [HttpGet]
         [Route("get_event_types")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Event>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<EventsType>))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(string))]
         public IActionResult GetEventsType()
         {
-            List<Event> lista = new List<Event>();
+            List<EventsType> lista = new List<EventsType>();
             try
             {
                 //Se conecta la DB usando SqlConnection y la cadena de conexion
@@ -486,7 +486,7 @@ namespace APIEvent.Controllers
                     {
                         while (rd.Read())
                         {
-                            lista.Add(new Event
+                            lista.Add(new EventsType
                             {
                                 //Se le asgina los campos respectivos
                                 TipoEvento = rd["tipo_evento"].ToString()
@@ -503,9 +503,6 @@ namespace APIEvent.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new { mensaje = error.Message, response = lista });
             }
         }
-
-
-
 
 
 

@@ -86,7 +86,6 @@ namespace APIEvent.Controllers
                                 IdSuborganizacion = Convert.ToInt32(rd["id_suborganización1"]),
                                 TipoEvento = rd["tipo_evento"].ToString(),
                                 CuposDisponibles = Convert.ToInt32(rd["cupos_disponibles"]),
-                                Likes = Convert.ToInt32(rd["likes"])
                             });
                         }
                     }
@@ -489,7 +488,8 @@ namespace APIEvent.Controllers
                             lista.Add(new EventsType
                             {
                                 //Se le asgina los campos respectivos
-                                TipoEvento = rd["tipo_evento"].ToString()
+                                TipoEvento = rd["tipo_evento"].ToString(),
+                                idTipoEvento = Convert.ToInt32(rd["id_tipo_evento"]),
                             });
                         }
                     }

@@ -127,7 +127,7 @@ namespace APIEvent.Controllers
         /// Si hay un error interno en el servidor, devuelve un objeto StatusCode con el estado 500 y un mensaje de error.
         /// </returns>
         //Endpoint para cambiar el estado de asistencia a cancelado
-        [HttpPut]
+        [HttpDelete]
         [Route("CancelAttendance")]
         public IActionResult CancelAttendance(string correoUsuario, int idEvento)
         {
@@ -145,7 +145,7 @@ namespace APIEvent.Controllers
 
                     command.ExecuteNonQuery();
 
-                    return Ok("Estado de asistencia actualizado correctamente.");
+                    return Ok("Se eliminó correctamente la asistencia");
                 }
             }
             catch (Exception ex)
@@ -165,7 +165,7 @@ namespace APIEvent.Controllers
         /// Si hay un error interno en el servidor, devuelve un objeto StatusCode con el estado 500 y un mensaje de error.
         /// </returns>
         //Endpoint para confirmar la asistencia al evento
-        [HttpPost]
+        [HttpPut]
         [Route("ConfirmAttendance")]
         public IActionResult ConfirmAttendance(string nroDocumentoUsuario)
         {

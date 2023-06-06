@@ -63,7 +63,7 @@
             <param name="IdEvento">ID del evento</param>
             <returns>Devuelve un evento</returns>
         </member>
-        <member name="M:APIEvent.Controllers.EventController.GuardarEvento(System.String,System.String,System.String,System.DateTime,System.DateTime,System.String,System.Int32,System.Int32,System.Int32)">
+        <member name="M:APIEvent.Controllers.EventController.GuardarEvento(System.String,System.String,System.String,System.DateTime,System.DateTime,System.String,System.Int32,System.Int32,System.Int32,System.Int32)">
             <summary>
             Guarda un nuevo evento en la DB
             </summary>
@@ -74,6 +74,7 @@
             <param name="fecha_final">Fecha del final del evento</param>
             <param name="lugar">Lugar del evento</param>
             <param name="aforo">Capcacidad de personas para el evento</param>
+            <param name="valor_total">Precio del evento</param>
             <param name="id_suborganizacion">ID de la suborganización que creó el evento</param>
             <param name="id_tipo_evento">ID del tipo de evento o categoria</param>
             <returns>
@@ -125,6 +126,13 @@
             Si se obtienen los tipos de eventos correctamente, devuelve un objeto StatusCode con el estado 200 y una lista de objetos Event.
             Si hay un error interno en el servidor, devuelve un objeto StatusCode con el estado 500 y un mensaje de error.
             </returns>
+        </member>
+        <member name="M:APIEvent.Controllers.EventController.ObtenerEventosPorOrganizacion(System.Int32)">
+            <summary>
+            Obtiene los eventos asociados a una organización.
+            </summary>
+            <param name="OrganizacionId">ID de la organización.</param>
+            <returns>Lista de eventos asociados a la organización.</returns>
         </member>
         <member name="M:APIEvent.Controllers.MemberController.EliminarMiembro(System.String,System.Int32)">
             <summary>

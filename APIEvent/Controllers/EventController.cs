@@ -170,6 +170,7 @@ namespace APIEvent.Controllers
         /// <param name="fecha_final">Fecha del final del evento</param>
         /// <param name="lugar">Lugar del evento</param>
         /// <param name="aforo">Capcacidad de personas para el evento</param>
+        /// <param name="valor_total">Precio del evento</param>
         /// <param name="id_suborganizacion">ID de la suborganización que creó el evento</param>
         /// <param name="id_tipo_evento">ID del tipo de evento o categoria</param>
         /// <returns>
@@ -186,7 +187,7 @@ namespace APIEvent.Controllers
         [SwaggerResponse(StatusCodes.Status200OK, "El evento se guardó correctamente")]
         [SwaggerResponse(StatusCodes.Status400BadRequest, "Error en los parámetros proporcionados")]
         [SwaggerResponse(StatusCodes.Status500InternalServerError, "Error interno del servidor")]
-        public IActionResult GuardarEvento(string nombreEvento, string descripcion, string imagen, DateTime fecha_inicio, DateTime fecha_final, string lugar, int aforo, int id_suborganizacion, int id_tipo_evento)
+        public IActionResult GuardarEvento(string nombreEvento, string descripcion, string imagen, DateTime fecha_inicio, DateTime fecha_final, string lugar, int aforo, int valor_total, int id_suborganizacion, int id_tipo_evento)
         {
             try
             {
@@ -235,7 +236,7 @@ namespace APIEvent.Controllers
                         cmd.Parameters.AddWithValue("@aforo", aforo);
                         cmd.Parameters.AddWithValue("@valor", 0);//No se esta usando por el momento por lo cual se asigna 0
                         cmd.Parameters.AddWithValue("@iva", 0);//No se esta usando por el momento por lo cual se asigna 0
-                        cmd.Parameters.AddWithValue("@valor_total", 0);//No se esta usando por el momento por lo cual se asigna 0
+                        cmd.Parameters.AddWithValue("@valor_total", valor_total);
                         cmd.Parameters.AddWithValue("@id_suborganizacion", id_suborganizacion);
                         cmd.Parameters.AddWithValue("@id_tipo_evento", id_tipo_evento);
 
@@ -501,6 +502,81 @@ namespace APIEvent.Controllers
             {
                 //Retorna un mensaje de error si salió algo malo y un estado 500
                 return StatusCode(StatusCodes.Status500InternalServerError, new { mensaje = error.Message, response = lista });
+            }
+        }
+
+        /// <summary>
+        /// Obtiene los eventos asociados a una organización.
+        /// </summary>
+        /// <param name="OrganizacionId">ID de la organización.</param>
+        /// <returns>Lista de eventos asociados a la organización.</returns>
+        [HttpGet]
+        [Route("GetEventsOrg")]
+        public IActionResult ObtenerEventosPorOrganizacion(int OrganizacionId)
+        {
+            // Nombre del procedimiento almacenado
+            string storedProcedure = "USP_ObtenerEventosPorOrganizacion";
+
+            try
+            {
+                // Crear una lista para almacenar los eventos
+                List<Event> eventos = new List<Event>();
+
+                // Establecer la conexión con la base de datos
+                using (SqlConnection connection = new SqlConnection(cadenaSQL))
+                {
+                    connection.Open();
+
+                    // Crear un comando para ejecutar el procedimiento almacenado
+                    using (SqlCommand command = new SqlCommand(storedProcedure, connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        // Agregar el parámetro de la organización ID al comando
+                        command.Parameters.AddWithValue("@IdOrganizacion", OrganizacionId); // Cambio de nombre del parámetro
+
+
+                        // Ejecutar el comando y obtener los resultados en un lector de datos   
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            // Leer los resultados y agregarlos a la lista de eventos
+                            while (reader.Read())
+                            {
+                                Event evento = new Event
+                                {
+                                    IdEvento = (int)reader["id_evento"],
+                                    NombreEvento = (string)reader["nombre_evento"],
+                                    DescripcionEvento = (string)reader["descripcion_evento"],
+                                    ImagenEvento = (string)reader["imagen_evento"],
+                                    FechaInicioEvento = (DateTime)reader["fecha_inicio_evento"],
+                                    FechaFinalEvento = (DateTime)reader["fecha_final_evento"],
+                                    FechaCreacionEvento = (DateTime)reader["fecha_creacion_evento"],
+                                    LugarEvento = (string)reader["lugar_evento"],
+                                    AforoEvento = (int)reader["aforo_evento"],
+                                    ValorEvento = Convert.ToDecimal(reader["valor_evento"]),
+                                    Iva = Convert.ToDecimal(reader["iva"]),
+                                    ValorTotalEvento = Convert.ToDecimal(reader["valor_total_evento"]),
+                                    IdSuborganizacion = (int)reader["id_suborganización1"],
+                                    IdTipoEvento = (int)reader["id_tipo_evento1"],
+                                    TipoEvento = (string)reader["tipo_evento"],
+                                    CuposDisponibles = (int)reader["cupos_disponibles"]
+
+                                    // Otras propiedades del evento...
+                                };
+
+                                eventos.Add(evento);
+                            }
+                        }
+                    }
+                }
+
+                // Devolver la lista de eventos como una respuesta HTTP 200 (OK)
+                return Ok(eventos);
+            }
+            catch (Exception ex)
+            {
+                // Manejar cualquier error que ocurra durante la ejecución del procedimiento almacenado
+                return StatusCode(500, "Error: " + ex.Message);
             }
         }
 

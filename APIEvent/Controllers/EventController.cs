@@ -281,7 +281,7 @@ namespace APIEvent.Controllers
         // Endpoint para actualizar un evento en la DB
         [HttpPut]
         [Route("Update/{IdEvento:int}")]
-        public IActionResult ActualizarEvento(int IdEvento, string nombreEvento, string descripcion, string imagen, DateTime fecha_inicio, DateTime fecha_final, string lugar, int aforo, int id_tipo_evento)
+        public IActionResult ActualizarEvento(int IdEvento, string nombreEvento, string descripcion, string imagen, DateTime fecha_inicio, DateTime fecha_final, string lugar, int aforo, int valor_total, int id_tipo_evento)
         {
             try
             {
@@ -357,7 +357,7 @@ namespace APIEvent.Controllers
                         actualizarEventoCmd.Parameters.AddWithValue("@aforo", aforo);
                         actualizarEventoCmd.Parameters.AddWithValue("@valor", 0);
                         actualizarEventoCmd.Parameters.AddWithValue("@iva", 0);
-                        actualizarEventoCmd.Parameters.AddWithValue("@valor_total", 0);
+                        actualizarEventoCmd.Parameters.AddWithValue("@valor_total", valor_total);
                         actualizarEventoCmd.Parameters.AddWithValue("@id_tipo_evento", id_tipo_evento);
                         actualizarEventoCmd.ExecuteNonQuery();
                     }

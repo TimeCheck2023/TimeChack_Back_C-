@@ -39,11 +39,12 @@
             Si hay un error interno en el servidor, devuelve un objeto StatusCode con el estado 500 y un mensaje de error.
             </returns>
         </member>
-        <member name="M:APIEvent.Controllers.AttendanceController.ConfirmAttendance(System.String)">
+        <member name="M:APIEvent.Controllers.AttendanceController.ConfirmAttendance(System.String,System.String)">
             <summary>
             Endpoint para confirmar una asistencia.
             </summary>
             <param name="nroDocumentoUsuario">Número de documento del usuario.</param>
+            <param name="idEvento">Identificador del evento.</param>
             <returns>
             Retorna un objeto IActionResult que indica el resultado de la operación.
             Si se confirma la asistencia correctamente, devuelve un objeto StatusCode con el estado 200 y un mensaje de éxito.

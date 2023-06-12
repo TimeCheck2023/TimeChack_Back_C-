@@ -174,15 +174,15 @@ namespace APIEvent.Controllers
         /// Endpoint para confirmar una asistencia.
         /// </summary>
         /// <param name="nroDocumentoUsuario">Número de documento del usuario.</param>
+        /// <param name="idEvento">Identificador del evento.</param>
         /// <returns>
         /// Retorna un objeto IActionResult que indica el resultado de la operación.
         /// Si se confirma la asistencia correctamente, devuelve un objeto StatusCode con el estado 200 y un mensaje de éxito.
         /// Si hay un error interno en el servidor, devuelve un objeto StatusCode con el estado 500 y un mensaje de error.
         /// </returns>
-        //Endpoint para confirmar la asistencia al evento
         [HttpPut]
         [Route("ConfirmAttendance")]
-        public IActionResult ConfirmAttendance(string nroDocumentoUsuario)
+        public IActionResult ConfirmAttendance(string nroDocumentoUsuario, string idEvento)
         {
             try
             {
@@ -194,10 +194,17 @@ namespace APIEvent.Controllers
                     command.CommandType = CommandType.StoredProcedure;
 
                     command.Parameters.AddWithValue("@nro_documento_usuario", nroDocumentoUsuario);
+                    command.Parameters.AddWithValue("@id_evento2 ", idEvento);
+
+                    SqlParameter messageParameter = new SqlParameter("@mensaje", SqlDbType.VarChar, 100);
+                    messageParameter.Direction = ParameterDirection.Output;
+                    command.Parameters.Add(messageParameter);
 
                     command.ExecuteNonQuery();
 
-                    return Ok("Estado de asistencia actualizado correctamente.");
+                    string message = command.Parameters["@mensaje"].Value.ToString();
+
+                    return Ok(message);
                 }
             }
             catch (Exception ex)
@@ -205,6 +212,7 @@ namespace APIEvent.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
 
 
 

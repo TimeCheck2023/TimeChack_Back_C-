@@ -63,6 +63,30 @@
             <param name="IdEvento">ID del evento</param>
             <returns>Devuelve un evento</returns>
         </member>
+        <member name="M:APIEvent.Controllers.EventController.GetEventsBySuborganization(System.Int32)">
+            <summary>
+            Obtiene los eventos de una suborganización por su ID.
+            </summary>
+            <param name="suborganizacionId">ID de la suborganización</param>
+            <returns>Devuelve una lista de eventos de la suborganización</returns>
+        </member>
+        <member name="M:APIEvent.Controllers.EventController.ObtenerEventosPorOrganizacion(System.Int32)">
+            <summary>
+            Obtiene los eventos asociados a una organización.
+            </summary>
+            <param name="OrganizacionId">ID de la organización.</param>
+            <returns>Lista de eventos asociados a la organización.</returns>
+        </member>
+        <member name="M:APIEvent.Controllers.EventController.GetEventsType">
+            <summary>
+            Obtiene todos los tipos de eventos
+            </summary>
+            <returns>
+            Retorna un objeto de tipo IActionResult que indica el resultado de la operación.
+            Si se obtienen los tipos de eventos correctamente, devuelve un objeto StatusCode con el estado 200 y una lista de objetos Event.
+            Si hay un error interno en el servidor, devuelve un objeto StatusCode con el estado 500 y un mensaje de error.
+            </returns>
+        </member>
         <member name="M:APIEvent.Controllers.EventController.GuardarEvento(System.String,System.String,System.String,System.DateTime,System.DateTime,System.String,System.Int32,System.Int32,System.Int32,System.Int32)">
             <summary>
             Guarda un nuevo evento en la DB
@@ -108,7 +132,7 @@
             <summary>
             Elimina un evento por su ID
             </summary>
-            <param name="idEvento">ID dek evebti</param>
+            <param name="idEvento">ID del evento</param>
             <returns>
             Retorna un objeto de tipo IActionResult que indica el resultado de la operación.
             Si el evento se elimina correctamente, devuelve un objeto StatusCode con el estado 200 y un mensaje de éxito.
@@ -116,23 +140,6 @@
             Si hay un error al eliminar la imagen de Cloudinary, devuelve un objeto StatusCode con el estado 500 y un mensaje de error.
             Si hay un error interno en el servidor, devuelve un objeto StatusCode con el estado 500 y un mensaje de error.
             </returns>
-        </member>
-        <member name="M:APIEvent.Controllers.EventController.GetEventsType">
-            <summary>
-            Obtiene todos los tipos de eventos
-            </summary>
-            <returns>
-            Retorna un objeto de tipo IActionResult que indica el resultado de la operación.
-            Si se obtienen los tipos de eventos correctamente, devuelve un objeto StatusCode con el estado 200 y una lista de objetos Event.
-            Si hay un error interno en el servidor, devuelve un objeto StatusCode con el estado 500 y un mensaje de error.
-            </returns>
-        </member>
-        <member name="M:APIEvent.Controllers.EventController.ObtenerEventosPorOrganizacion(System.Int32)">
-            <summary>
-            Obtiene los eventos asociados a una organización.
-            </summary>
-            <param name="OrganizacionId">ID de la organización.</param>
-            <returns>Lista de eventos asociados a la organización.</returns>
         </member>
         <member name="M:APIEvent.Controllers.MemberController.EliminarMiembro(System.String,System.Int32)">
             <summary>

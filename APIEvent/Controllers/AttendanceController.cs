@@ -47,9 +47,22 @@ namespace APIEvent.Controllers
                     command.Parameters.AddWithValue("@eventId", attendance.EventId);
                     command.Parameters.AddWithValue("@userEmail", attendance.UserEmail);
 
+                    SqlParameter messageParameter = new SqlParameter("@Message", SqlDbType.VarChar, 1000);
+                    messageParameter.Direction = ParameterDirection.Output;
+                    command.Parameters.Add(messageParameter);
+
                     command.ExecuteNonQuery();
 
-                    return Ok("Asistencia insertada correctamente.");
+                    string message = command.Parameters["@Message"].Value.ToString();
+
+                    if (message == "Asistencia insertada correctamente.")
+                    {
+                        return Ok(message);
+                    }
+                    else
+                    {
+                        return BadRequest(message);
+                    }
                 }
             }
             catch (Exception ex)
@@ -57,6 +70,8 @@ namespace APIEvent.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
+
 
 
 

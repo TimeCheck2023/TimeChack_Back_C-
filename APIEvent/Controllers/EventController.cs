@@ -157,7 +157,189 @@ namespace APIEvent.Controllers
             }
         }
 
+        /// <summary>
+        /// Obtiene los eventos de una suborganización por su ID.
+        /// </summary>
+        /// <param name="suborganizacionId">ID de la suborganización</param>
+        /// <returns>Devuelve una lista de eventos de la suborganización</returns>
+        [HttpGet]
+        [Route("GetEventsBySuborganization/{suborganizacionId:int}")]
+        [SwaggerOperation(Summary = "Obtiene los eventos de una suborganización por su ID")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Devuelve una lista de eventos de la suborganización")]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, "Error en los parámetros proporcionados")]
+        [SwaggerResponse(StatusCodes.Status500InternalServerError, "Error interno del servidor")]
+        public IActionResult GetEventsBySuborganization(int suborganizacionId)
+        {
+            try
+            {
+                List<Event> listaEventos = new List<Event>();
 
+                using (var connection = new SqlConnection(cadenaSQL))
+                {
+                    connection.Open();
+
+                    var cmd = new SqlCommand("USP_ObtenerEventosPorSuborganizacion", connection);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@suborganizacionId", suborganizacionId);
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            listaEventos.Add(new Event
+                            {
+                                IdEvento = Convert.ToInt32(reader["id_evento"]),
+                                NombreEvento = reader["nombre_evento"].ToString(),
+                                DescripcionEvento = reader["descripcion_evento"].ToString(),
+                                ImagenEvento = reader["imagen_evento"].ToString(),
+                                FechaInicioEvento = Convert.ToDateTime(reader["fecha_inicio_evento"]),
+                                FechaFinalEvento = Convert.ToDateTime(reader["fecha_final_evento"]),
+                                FechaCreacionEvento = Convert.ToDateTime(reader["fecha_creacion_evento"]),
+                                LugarEvento = reader["lugar_evento"].ToString(),
+                                AforoEvento = Convert.ToInt32(reader["aforo_evento"]),
+                                ValorEvento = Convert.ToDecimal(reader["valor_evento"]),
+                                Iva = Convert.ToDecimal(reader["iva"]),
+                                ValorTotalEvento = Convert.ToDecimal(reader["valor_total_evento"]),
+                                IdSuborganizacion = Convert.ToInt32(reader["id_suborganización1"]),
+                                TipoEvento = reader["tipo_evento"].ToString(),
+                                CuposDisponibles = Convert.ToInt32(reader["cupos_disponibles"])
+                            });
+                        }
+                    }
+                }
+
+                return StatusCode(StatusCodes.Status200OK, new { mensaje = "ok", response = listaEventos });
+            }
+            catch (Exception error)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { mensaje = error.Message, response = new List<Event>() });
+            }
+        }
+
+        /// <summary>
+        /// Obtiene los eventos asociados a una organización.
+        /// </summary>
+        /// <param name="OrganizacionId">ID de la organización.</param>
+        /// <returns>Lista de eventos asociados a la organización.</returns>
+        [HttpGet]
+        [Route("GetEventsOrg")]
+        public IActionResult ObtenerEventosPorOrganizacion(int OrganizacionId)
+        {
+            // Nombre del procedimiento almacenado
+            string storedProcedure = "USP_ObtenerEventosPorOrganizacion";
+
+            try
+            {
+                // Crear una lista para almacenar los eventos
+                List<Event> eventos = new List<Event>();
+
+                // Establecer la conexión con la base de datos
+                using (SqlConnection connection = new SqlConnection(cadenaSQL))
+                {
+                    connection.Open();
+
+                    // Crear un comando para ejecutar el procedimiento almacenado
+                    using (SqlCommand command = new SqlCommand(storedProcedure, connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        // Agregar el parámetro de la organización ID al comando
+                        command.Parameters.AddWithValue("@IdOrganizacion", OrganizacionId); // Cambio de nombre del parámetro
+
+
+                        // Ejecutar el comando y obtener los resultados en un lector de datos   
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            // Leer los resultados y agregarlos a la lista de eventos
+                            while (reader.Read())
+                            {
+                                Event evento = new Event
+                                {
+                                    IdEvento = (int)reader["id_evento"],
+                                    NombreEvento = (string)reader["nombre_evento"],
+                                    DescripcionEvento = (string)reader["descripcion_evento"],
+                                    ImagenEvento = (string)reader["imagen_evento"],
+                                    FechaInicioEvento = (DateTime)reader["fecha_inicio_evento"],
+                                    FechaFinalEvento = (DateTime)reader["fecha_final_evento"],
+                                    FechaCreacionEvento = (DateTime)reader["fecha_creacion_evento"],
+                                    LugarEvento = (string)reader["lugar_evento"],
+                                    AforoEvento = (int)reader["aforo_evento"],
+                                    ValorEvento = Convert.ToDecimal(reader["valor_evento"]),
+                                    Iva = Convert.ToDecimal(reader["iva"]),
+                                    ValorTotalEvento = Convert.ToDecimal(reader["valor_total_evento"]),
+                                    IdSuborganizacion = (int)reader["id_suborganización1"],
+                                    IdTipoEvento = (int)reader["id_tipo_evento1"],
+                                    TipoEvento = (string)reader["tipo_evento"],
+                                    CuposDisponibles = (int)reader["cupos_disponibles"]
+
+                                    // Otras propiedades del evento...
+                                };
+
+                                eventos.Add(evento);
+                            }
+                        }
+                    }
+                }
+
+                // Devolver la lista de eventos como una respuesta HTTP 200 (OK)
+                return Ok(eventos);
+            }
+            catch (Exception ex)
+            {
+                // Manejar cualquier error que ocurra durante la ejecución del procedimiento almacenado
+                return StatusCode(500, "Error: " + ex.Message);
+            }
+        }
+
+
+        /// <summary>
+        /// Obtiene todos los tipos de eventos
+        /// </summary>
+        /// <returns>
+        /// Retorna un objeto de tipo IActionResult que indica el resultado de la operación.
+        /// Si se obtienen los tipos de eventos correctamente, devuelve un objeto StatusCode con el estado 200 y una lista de objetos Event.
+        /// Si hay un error interno en el servidor, devuelve un objeto StatusCode con el estado 500 y un mensaje de error.
+        /// </returns>
+
+        [HttpGet]
+        [Route("get_event_types")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<EventsType>))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(string))]
+        public IActionResult GetEventsType()
+        {
+            List<EventsType> lista = new List<EventsType>();
+            try
+            {
+                //Se conecta la DB usando SqlConnection y la cadena de conexion
+                using (var conexion = new SqlConnection(cadenaSQL))
+                {
+                    //Se abre la conexion a la DB
+                    conexion.Open();
+                    //Se ejecuta el procedimiento USP_ObtenerTiposEventos
+                    var cmd = new SqlCommand("USP_ObtenerTiposEventos", conexion);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    using (var rd = cmd.ExecuteReader())
+                    {
+                        while (rd.Read())
+                        {
+                            lista.Add(new EventsType
+                            {
+                                //Se le asgina los campos respectivos
+                                TipoEvento = rd["tipo_evento"].ToString(),
+                                idTipoEvento = Convert.ToInt32(rd["id_tipo_evento"]),
+                            });
+                        }
+                    }
+                }
+                //Retorna un mensaje "ok" si sale todo bien y un estado 200
+                return StatusCode(StatusCodes.Status200OK, new { mensaje = "ok", response = lista });
+            }
+            catch (Exception error)
+            {
+                //Retorna un mensaje de error si salió algo malo y un estado 500
+                return StatusCode(StatusCodes.Status500InternalServerError, new { mensaje = error.Message, response = lista });
+            }
+        }
 
 
         /// <summary>
@@ -377,7 +559,7 @@ namespace APIEvent.Controllers
         /// <summary>
         /// Elimina un evento por su ID
         /// </summary>
-        /// <param name="idEvento">ID dek evebti</param>
+        /// <param name="idEvento">ID del evento</param>
         /// <returns>
         /// Retorna un objeto de tipo IActionResult que indica el resultado de la operación.
         /// Si el evento se elimina correctamente, devuelve un objeto StatusCode con el estado 200 y un mensaje de éxito.
@@ -393,58 +575,18 @@ namespace APIEvent.Controllers
         {
             try
             {
-                // Obtener imagen del evento a eliminar
-                string imagenUrl = "";
-                using (var conexion = new SqlConnection(cadenaSQL))
-                {
-                    conexion.Open();
-                    var cmd = new SqlCommand("USP_ObtenerEvento", conexion);
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@id_evento", idEvento);
-                    using (SqlDataReader reader = cmd.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            // Se obtiene el campo de la imagen en la DB y se guarda en imagenUrl
-                            imagenUrl = reader["imagen_evento"].ToString();
-                        }
-                    }
-                }
+                            using (var conexion = new SqlConnection(cadenaSQL))
+                            {
+                                conexion.Open();
+                                var cmd = new SqlCommand("USP_EliminarEvento", conexion);
+                                cmd.CommandType = CommandType.StoredProcedure;
+                                cmd.Parameters.AddWithValue("@id_evento", idEvento);
+                                cmd.ExecuteNonQuery();
+                            }
 
-                if (!string.IsNullOrEmpty(imagenUrl))
-                {
-                    // Eliminar imagen de Cloudinary
-                    var cloudinary = new Cloudinary(new Account(cloudName, apiKey, apiSecret));
-                    var publicId = Path.GetFileNameWithoutExtension(imagenUrl);
-                    var deletionParams = new DeletionParams(publicId) { ResourceType = ResourceType.Image };
-                    var deletionResult = cloudinary.Destroy(deletionParams);
+                            // Retornar mensaje de éxito
+                            return StatusCode(StatusCodes.Status200OK, new { mensaje = "El evento se eliminó correctamente" });
 
-                    if (deletionResult.Result == "ok")
-                    {
-                        // Eliminar evento y registros relacionados de la base de datos
-                        using (var conexion = new SqlConnection(cadenaSQL))
-                        {
-                            conexion.Open();
-                            var cmd = new SqlCommand("USP_EliminarEvento", conexion);
-                            cmd.CommandType = CommandType.StoredProcedure;
-                            cmd.Parameters.AddWithValue("@id_evento", idEvento);
-                            cmd.ExecuteNonQuery();
-                        }
-
-                        // Retornar mensaje de éxito
-                        return StatusCode(StatusCodes.Status200OK, new { mensaje = "El evento se eliminó correctamente" });
-                    }
-                    else
-                    {
-                        // Si la eliminación de la imagen falla, puedes manejar el error como desees
-                        return StatusCode(StatusCodes.Status500InternalServerError, new { mensaje = "Error al eliminar la imagen de Cloudinary" });
-                    }
-                }
-                else
-                {
-                    // Si la URL de la imagen está vacía, puedes manejarlo como desees
-                    return StatusCode(StatusCodes.Status400BadRequest, new { mensaje = "La URL de la imagen es inválida" });
-                }
             }
             catch (Exception error)
             {
@@ -455,130 +597,6 @@ namespace APIEvent.Controllers
 
 
 
-
-        /// <summary>
-        /// Obtiene todos los tipos de eventos
-        /// </summary>
-        /// <returns>
-        /// Retorna un objeto de tipo IActionResult que indica el resultado de la operación.
-        /// Si se obtienen los tipos de eventos correctamente, devuelve un objeto StatusCode con el estado 200 y una lista de objetos Event.
-        /// Si hay un error interno en el servidor, devuelve un objeto StatusCode con el estado 500 y un mensaje de error.
-        /// </returns>
-
-        [HttpGet]
-        [Route("get_event_types")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<EventsType>))]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(string))]
-        public IActionResult GetEventsType()
-        {
-            List<EventsType> lista = new List<EventsType>();
-            try
-            {
-                //Se conecta la DB usando SqlConnection y la cadena de conexion
-                using (var conexion = new SqlConnection(cadenaSQL))
-                {
-                    //Se abre la conexion a la DB
-                    conexion.Open();
-                    //Se ejecuta el procedimiento USP_ObtenerTiposEventos
-                    var cmd = new SqlCommand("USP_ObtenerTiposEventos", conexion);
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    using (var rd = cmd.ExecuteReader())
-                    {
-                        while (rd.Read())
-                        {
-                            lista.Add(new EventsType
-                            {
-                                //Se le asgina los campos respectivos
-                                TipoEvento = rd["tipo_evento"].ToString(),
-                                idTipoEvento = Convert.ToInt32(rd["id_tipo_evento"]),
-                            });
-                        }
-                    }
-                }
-                //Retorna un mensaje "ok" si sale todo bien y un estado 200
-                return StatusCode(StatusCodes.Status200OK, new { mensaje = "ok", response = lista });
-            }
-            catch (Exception error)
-            {
-                //Retorna un mensaje de error si salió algo malo y un estado 500
-                return StatusCode(StatusCodes.Status500InternalServerError, new { mensaje = error.Message, response = lista });
-            }
-        }
-
-        /// <summary>
-        /// Obtiene los eventos asociados a una organización.
-        /// </summary>
-        /// <param name="OrganizacionId">ID de la organización.</param>
-        /// <returns>Lista de eventos asociados a la organización.</returns>
-        [HttpGet]
-        [Route("GetEventsOrg")]
-        public IActionResult ObtenerEventosPorOrganizacion(int OrganizacionId)
-        {
-            // Nombre del procedimiento almacenado
-            string storedProcedure = "USP_ObtenerEventosPorOrganizacion";
-
-            try
-            {
-                // Crear una lista para almacenar los eventos
-                List<Event> eventos = new List<Event>();
-
-                // Establecer la conexión con la base de datos
-                using (SqlConnection connection = new SqlConnection(cadenaSQL))
-                {
-                    connection.Open();
-
-                    // Crear un comando para ejecutar el procedimiento almacenado
-                    using (SqlCommand command = new SqlCommand(storedProcedure, connection))
-                    {
-                        command.CommandType = CommandType.StoredProcedure;
-
-                        // Agregar el parámetro de la organización ID al comando
-                        command.Parameters.AddWithValue("@IdOrganizacion", OrganizacionId); // Cambio de nombre del parámetro
-
-
-                        // Ejecutar el comando y obtener los resultados en un lector de datos   
-                        using (SqlDataReader reader = command.ExecuteReader())
-                        {
-                            // Leer los resultados y agregarlos a la lista de eventos
-                            while (reader.Read())
-                            {
-                                Event evento = new Event
-                                {
-                                    IdEvento = (int)reader["id_evento"],
-                                    NombreEvento = (string)reader["nombre_evento"],
-                                    DescripcionEvento = (string)reader["descripcion_evento"],
-                                    ImagenEvento = (string)reader["imagen_evento"],
-                                    FechaInicioEvento = (DateTime)reader["fecha_inicio_evento"],
-                                    FechaFinalEvento = (DateTime)reader["fecha_final_evento"],
-                                    FechaCreacionEvento = (DateTime)reader["fecha_creacion_evento"],
-                                    LugarEvento = (string)reader["lugar_evento"],
-                                    AforoEvento = (int)reader["aforo_evento"],
-                                    ValorEvento = Convert.ToDecimal(reader["valor_evento"]),
-                                    Iva = Convert.ToDecimal(reader["iva"]),
-                                    ValorTotalEvento = Convert.ToDecimal(reader["valor_total_evento"]),
-                                    IdSuborganizacion = (int)reader["id_suborganización1"],
-                                    IdTipoEvento = (int)reader["id_tipo_evento1"],
-                                    TipoEvento = (string)reader["tipo_evento"],
-                                    CuposDisponibles = (int)reader["cupos_disponibles"]
-
-                                    // Otras propiedades del evento...
-                                };
-
-                                eventos.Add(evento);
-                            }
-                        }
-                    }
-                }
-
-                // Devolver la lista de eventos como una respuesta HTTP 200 (OK)
-                return Ok(eventos);
-            }
-            catch (Exception ex)
-            {
-                // Manejar cualquier error que ocurra durante la ejecución del procedimiento almacenado
-                return StatusCode(500, "Error: " + ex.Message);
-            }
-        }
 
 
 

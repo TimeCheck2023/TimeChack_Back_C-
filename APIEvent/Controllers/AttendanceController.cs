@@ -214,10 +214,158 @@ namespace APIEvent.Controllers
         }
 
 
+        /// <summary>
+        /// Obtiene la información de los usuarios con estado de asistencia pendiente para un evento específico.
+        /// </summary>
+        /// <param name="idEvento">ID del evento.</param>
+        /// <returns>
+        /// Retorna un objeto IActionResult que contiene la lista de información de los usuarios con estado de asistencia pendiente.
+        /// Si la operación se realiza correctamente, devuelve un objeto StatusCode con el estado 200 y la lista de usuarios.
+        /// Si hay un error interno en el servidor, devuelve un objeto StatusCode con el estado 500 y un mensaje de error.
+        /// </returns>
+        [HttpGet]
+        [Route("GetPendingAttendees")]
+        public IActionResult GetPendingAttendees(int idEvento)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
 
+                    SqlCommand command = new SqlCommand("USP_ObtenerInformacionUsuarioPendiente", connection);
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@id_evento", idEvento);
 
+                    SqlDataAdapter dataAdapter = new SqlDataAdapter(command);
+                    DataTable dataTable = new DataTable();
+                    dataAdapter.Fill(dataTable);
 
+                    List<UserInformation> attendees = new List<UserInformation>();
 
+                    foreach (DataRow row in dataTable.Rows)
+                    {
+                        UserInformation attendee = new UserInformation
+                        {
+                            Email = row["correo_usuario"].ToString(),
+                            DocumentNumber = row["nro_documento_usuario"].ToString(),
+                            FullName = row["nombre_completo_usuario"].ToString(),
+                            DocumentType = row["tipo_documento_usuario"].ToString()
+                        };
+
+                        attendees.Add(attendee);
+                    }
+
+                    return Ok(attendees);
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Obtiene la información de los usuarios con estado de asistencia confirmado para un evento específico.
+        /// </summary>
+        /// <param name="idEvento">ID del evento.</param>
+        /// <returns>
+        /// Retorna un objeto IActionResult que contiene la lista de información de los usuarios con estado de asistencia confirmado.
+        /// Si la operación se realiza correctamente, devuelve un objeto StatusCode con el estado 200 y la lista de usuarios.
+        /// Si hay un error interno en el servidor, devuelve un objeto StatusCode con el estado 500 y un mensaje de error.
+        /// </returns>
+        [HttpGet]
+        [Route("GetConfirmedAttendees")]
+        public IActionResult GetConfirmedAttendees(int idEvento)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+
+                    SqlCommand command = new SqlCommand("USP_ObtenerInformacionUsuarioConfirmado", connection);
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@id_evento", idEvento);
+
+                    SqlDataAdapter dataAdapter = new SqlDataAdapter(command);
+                    DataTable dataTable = new DataTable();
+                    dataAdapter.Fill(dataTable);
+
+                    List<UserInformation> attendees = new List<UserInformation>();
+
+                    foreach (DataRow row in dataTable.Rows)
+                    {
+                        UserInformation attendee = new UserInformation
+                        {
+                            Email = row["correo_usuario"].ToString(),
+                            DocumentNumber = row["nro_documento_usuario"].ToString(),
+                            FullName = row["nombre_completo_usuario"].ToString(),
+                            DocumentType = row["tipo_documento_usuario"].ToString()
+                        };
+
+                        attendees.Add(attendee);
+                    }
+
+                    return Ok(attendees);
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Obtiene la información de los usuarios con estado de asistencia "no asistido" para un evento específico.
+        /// </summary>
+        /// <param name="idEvento">ID del evento.</param>
+        /// <returns>
+        /// Retorna un objeto IActionResult que contiene la lista de información de los usuarios con estado de asistencia "no asistido".
+        /// Si la operación se realiza correctamente, devuelve un objeto StatusCode con el estado 200 y la lista de usuarios.
+        /// Si hay un error interno en el servidor, devuelve un objeto StatusCode con el estado 500 y un mensaje de error.
+        /// </returns>
+        [HttpGet]
+        [Route("GetNonAttendingAttendees")]
+        public IActionResult GetNonAttendingAttendees(int idEvento)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+
+                    SqlCommand command = new SqlCommand("USP_ObtenerInformacionUsuarioNoAsistido", connection);
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@id_evento", idEvento);
+
+                    SqlDataAdapter dataAdapter = new SqlDataAdapter(command);
+                    DataTable dataTable = new DataTable();
+                    dataAdapter.Fill(dataTable);
+
+                    List<UserInformation> attendees = new List<UserInformation>();
+
+                    foreach (DataRow row in dataTable.Rows)
+                    {
+                        UserInformation attendee = new UserInformation
+                        {
+                            Email = row["correo_usuario"].ToString(),
+                            DocumentNumber = row["nro_documento_usuario"].ToString(),
+                            FullName = row["nombre_completo_usuario"].ToString(),
+                            DocumentType = row["tipo_documento_usuario"].ToString()
+                        };
+
+                        attendees.Add(attendee);
+                    }
+
+                    return Ok(attendees);
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
 
 
 

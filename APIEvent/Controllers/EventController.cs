@@ -293,6 +293,73 @@ namespace APIEvent.Controllers
 
 
         /// <summary>
+        /// Obtiene los eventos pendientes de un usuario.
+        /// </summary>
+        /// <param name="nro_documento_usuario">Número de identifiçación del usuario.</param>
+        /// <returns>Devuelve una lista de eventos pendientes.</returns>
+        [HttpGet]
+        [Route("PendingEvents/{nro_documento_usuario:int}")]
+        [SwaggerOperation(Summary = "Obtiene los eventos pendientes de un usuario")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Devuelve una lista de eventos pendientes")]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, "Error en los parámetros proporcionados")]
+        [SwaggerResponse(StatusCodes.Status500InternalServerError, "Error interno del servidor")]
+        public IActionResult GetPendingEvents(int nro_documento_usuario)
+        {
+            using (SqlConnection connection = new SqlConnection(cadenaSQL))
+            {
+                try
+                {
+                    connection.Open();
+
+                    using (SqlCommand command = new SqlCommand("USP_ObtenerEventosPendientesUsuario", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.Parameters.AddWithValue("@nro_documento_usuario", nro_documento_usuario);
+
+                        List<Event> pendingEvents = new List<Event>();
+
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                // Leer los datos del evento y agregarlo a la lista de eventos pendientes
+                                Event evento = new Event
+                                {
+                                    IdEvento = (int)reader["id_evento"],
+                                    NombreEvento = (string)reader["nombre_evento"],
+                                    DescripcionEvento = (string)reader["descripcion_evento"],
+                                    ImagenEvento = (string)reader["imagen_evento"],
+                                    FechaInicioEvento = (DateTime)reader["fecha_inicio_evento"],
+                                    FechaFinalEvento = (DateTime)reader["fecha_final_evento"],
+                                    FechaCreacionEvento = (DateTime)reader["fecha_creacion_evento"],
+                                    LugarEvento = (string)reader["lugar_evento"],
+                                    AforoEvento = (int)reader["aforo_evento"],
+                                    ValorEvento = Convert.ToDecimal(reader["valor_evento"]),
+                                    Iva = Convert.ToDecimal(reader["iva"]),
+                                    ValorTotalEvento = Convert.ToDecimal(reader["valor_total_evento"]),
+                                    IdSuborganizacion = (int)reader["id_suborganización1"],
+                                    TipoEvento = (string)reader["tipo_evento"],
+                                    CuposDisponibles = (int)reader["cupos_disponibles"]
+                                    // Otras propiedades del evento
+                                };
+
+                                pendingEvents.Add(evento);
+                            }
+                        }
+
+                        return StatusCode(StatusCodes.Status200OK, new { mensaje = "ok", response = pendingEvents });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Manejar el error y retornar un mensaje de error en caso de fallo
+                    return StatusCode(StatusCodes.Status500InternalServerError, new { mensaje = "Error interno del servidor", error = ex.Message });
+                }
+            }
+        }
+
+
+        /// <summary>
         /// Obtiene todos los tipos de eventos
         /// </summary>
         /// <returns>
@@ -594,10 +661,6 @@ namespace APIEvent.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new { mensaje = error.Message });
             }
         }
-
-
-
-
 
 
     }
